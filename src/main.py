@@ -19,7 +19,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icons/png/kontrol_24.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setToolTip("")
         MainWindow.setStyleSheet("background-color: #FFFFFF;")
@@ -217,9 +217,9 @@ class Ui_MainWindow(object):
 "")
         self.tab_indoor.setObjectName("tab_indoor")
         self.in_air_spinbox = QtWidgets.QSpinBox(self.tab_indoor)
-        self.in_air_spinbox.setGeometry(QtCore.QRect(530, 113, 71, 31))
+        self.in_air_spinbox.setGeometry(QtCore.QRect(530, 113, 71, 30))
         font = QtGui.QFont()
-        font.setPointSize(12)
+        font.setPointSize(11)
         self.in_air_spinbox.setFont(font)
         self.in_air_spinbox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.in_air_spinbox.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
@@ -1214,6 +1214,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.refresh_button)
         self.search_lineedit = QtWidgets.QLineEdit(self.tab_database)
         self.search_lineedit.setGeometry(QtCore.QRect(720, 12, 181, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.search_lineedit.setFont(font)
         self.search_lineedit.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.search_lineedit.setStyleSheet("QLineEdit {\n"
 "    background: transparent;\n"
@@ -1801,7 +1804,7 @@ class Ui_MainWindow(object):
         item = self.table.horizontalHeaderItem(2)
         item.setText(_translate("MainWindow", "Year"))
         item = self.table.horizontalHeaderItem(3)
-        item.setText(_translate("MainWindow", "uiD"))
+        item.setText(_translate("MainWindow", "UID"))
         item = self.table.horizontalHeaderItem(4)
         item.setText(_translate("MainWindow", "S1"))
         item = self.table.horizontalHeaderItem(5)
@@ -1869,4 +1872,4 @@ class Ui_MainWindow(object):
         self.out_open_button.setText(_translate("MainWindow", "OPEN"))
         self.outdoor_label.setText(_translate("MainWindow", "Outdoor"))
 
-import recourses_rc
+import resources_rc

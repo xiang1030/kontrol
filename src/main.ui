@@ -23,8 +23,8 @@
    <string>Kontrol</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>icon.ico</normaloff>icon.ico</iconset>
+   <iconset resource="resourses.qrc">
+    <normaloff>:/icons/png/kontrol_24.png</normaloff>:/icons/png/kontrol_24.png</iconset>
   </property>
   <property name="toolTip">
    <string/>
@@ -254,12 +254,12 @@ QComboBox QAbstractItemView {
         <x>530</x>
         <y>113</y>
         <width>71</width>
-        <height>31</height>
+        <height>30</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>12</pointsize>
+        <pointsize>11</pointsize>
        </font>
       </property>
       <property name="focusPolicy">
@@ -1827,7 +1827,7 @@ QTableWidget::item {
       </column>
       <column>
        <property name="text">
-        <string>uiD</string>
+        <string>UID</string>
        </property>
       </column>
       <column>
@@ -2164,6 +2164,11 @@ QPushButton:pressed {
         <height>31</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="focusPolicy">
        <enum>Qt::ClickFocus</enum>
       </property>
@@ -2206,7 +2211,7 @@ QLineEdit:focus {
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="recourses.qrc">:/icons/ui/search.png</pixmap>
+       <pixmap resource="resourses.qrc">:/icons/ui/search.png</pixmap>
       </property>
      </widget>
      <zorder>layoutWidget</zorder>
@@ -3221,7 +3226,7 @@ color: #424242;</string>
   </widget>
  </widget>
  <resources>
-  <include location="recourses.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>
