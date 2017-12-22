@@ -23,7 +23,7 @@
    <string>Kontrol</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resourses.qrc">
+   <iconset resource="resources.qrc">
     <normaloff>:/icons/png/kontrol_24.png</normaloff>:/icons/png/kontrol_24.png</iconset>
   </property>
   <property name="toolTip">
@@ -2181,15 +2181,20 @@ QPushButton:pressed {
 	padding: 0 24px 0 4px;
 	selection-background-color: #42A5F5;
 	selection-color: #ffffff;
+	background-image: url(:/icons/ui/search.png);
+	background-repeat: no-repeat;
+	background-position: right;
 }
 
 QLineEdit:hover {
     	border-bottom: 1px solid #1565C0;
 	width: 30px;
+	background-image: url(:/icons/ui/search_hover.png);
 }
 
 QLineEdit:focus {
     	border-bottom: 1px solid #1565C0;
+	background-image: url(:/icons/ui/search_hover.png);
 }
 
 </string>
@@ -2198,26 +2203,9 @@ QLineEdit:focus {
        <string>Search</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>877</x>
-        <y>20</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap resource="resourses.qrc">:/icons/ui/search.png</pixmap>
-      </property>
-     </widget>
      <zorder>layoutWidget</zorder>
      <zorder>table</zorder>
      <zorder>search_lineedit</zorder>
-     <zorder>label_3</zorder>
     </widget>
    </widget>
    <widget class="QFrame" name="room_frame">

@@ -1226,28 +1226,27 @@ class Ui_MainWindow(object):
 "    padding: 0 24px 0 4px;\n"
 "    selection-background-color: #42A5F5;\n"
 "    selection-color: #ffffff;\n"
+"    background-image: url(:/icons/ui/search.png);\n"
+"    background-repeat: no-repeat;\n"
+"    background-position: right;\n"
 "}\n"
 "\n"
 "QLineEdit:hover {\n"
 "        border-bottom: 1px solid #1565C0;\n"
 "    width: 30px;\n"
+"    background-image: url(:/icons/ui/search_hover.png);\n"
 "}\n"
 "\n"
 "QLineEdit:focus {\n"
 "        border-bottom: 1px solid #1565C0;\n"
+"    background-image: url(:/icons/ui/search_hover.png);\n"
 "}\n"
 "\n"
 "")
         self.search_lineedit.setObjectName("search_lineedit")
-        self.label_3 = QtWidgets.QLabel(self.tab_database)
-        self.label_3.setGeometry(QtCore.QRect(877, 20, 21, 16))
-        self.label_3.setText("")
-        self.label_3.setPixmap(QtGui.QPixmap(":/icons/ui/search.png"))
-        self.label_3.setObjectName("label_3")
         self.layoutWidget.raise_()
         self.table.raise_()
         self.search_lineedit.raise_()
-        self.label_3.raise_()
         self.tabWidget.addTab(self.tab_database, "")
         self.room_frame = QtWidgets.QFrame(self.centralwidget)
         self.room_frame.setGeometry(QtCore.QRect(10, 361, 441, 178))

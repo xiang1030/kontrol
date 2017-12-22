@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/ui/search_hover.png</file>
     <file>icons/ui/arrow_drop_down.png</file>
     <file>icons/png/kontrol_24.png</file>
     <file>icons/ui/arrow_drop_down_spin.png</file>
