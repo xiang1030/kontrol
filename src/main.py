@@ -36,7 +36,7 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         self.tabWidget.setFont(font)
         self.tabWidget.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        self.tabWidget.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.tabWidget.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.tabWidget.setStyleSheet("QTabWidget:pane {\n"
 "    background: #ffffff;\n"
 "     border: 1px solid transparent;\n"
@@ -1114,7 +1114,7 @@ class Ui_MainWindow(object):
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         self.table.setItem(1, 3, item)
         self.layoutWidget = QtWidgets.QWidget(self.tab_database)
-        self.layoutWidget.setGeometry(QtCore.QRect(10, 5, 500, 46))
+        self.layoutWidget.setGeometry(QtCore.QRect(10, 5, 461, 46))
         self.layoutWidget.setObjectName("layoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -1183,35 +1183,6 @@ class Ui_MainWindow(object):
         self.subject_combobox.addItem("")
         self.subject_combobox.addItem("")
         self.horizontalLayout.addWidget(self.subject_combobox)
-        self.refresh_button = QtWidgets.QPushButton(self.layoutWidget)
-        self.refresh_button.setMinimumSize(QtCore.QSize(31, 31))
-        self.refresh_button.setMaximumSize(QtCore.QSize(31, 16777215))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.refresh_button.setFont(font)
-        self.refresh_button.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.refresh_button.setStyleSheet("QPushButton{\n"
-"    background: transparent;\n"
-"    border: 0px;\n"
-"    image: url(:/icons/ui/refresh_normal.png);\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    image: url(:/icons/ui/refresh_hover.png);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    image: url(:/icons/ui/refresh_pressed.png);\n"
-"}\n"
-"\n"
-"")
-        self.refresh_button.setText("")
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/icons/ui/refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.refresh_button.setIcon(icon1)
-        self.refresh_button.setIconSize(QtCore.QSize(20, 20))
-        self.refresh_button.setObjectName("refresh_button")
-        self.horizontalLayout.addWidget(self.refresh_button)
         self.search_lineedit = QtWidgets.QLineEdit(self.tab_database)
         self.search_lineedit.setGeometry(QtCore.QRect(720, 12, 181, 31))
         font = QtGui.QFont()
@@ -1244,9 +1215,39 @@ class Ui_MainWindow(object):
 "\n"
 "")
         self.search_lineedit.setObjectName("search_lineedit")
+        self.refresh_button = QtWidgets.QPushButton(self.tab_database)
+        self.refresh_button.setGeometry(QtCore.QRect(480, 17, 31, 31))
+        self.refresh_button.setMinimumSize(QtCore.QSize(31, 31))
+        self.refresh_button.setMaximumSize(QtCore.QSize(31, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.refresh_button.setFont(font)
+        self.refresh_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.refresh_button.setStyleSheet("QPushButton{\n"
+"    background: transparent;\n"
+"    border: 0px;\n"
+"    image: url(:/icons/ui/refresh_normal.png);\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    image: url(:/icons/ui/refresh_hover.png);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    image: url(:/icons/ui/refresh_pressed.png);\n"
+"}\n"
+"\n"
+"")
+        self.refresh_button.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/icons/ui/refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.refresh_button.setIcon(icon1)
+        self.refresh_button.setIconSize(QtCore.QSize(20, 20))
+        self.refresh_button.setObjectName("refresh_button")
         self.layoutWidget.raise_()
         self.table.raise_()
         self.search_lineedit.raise_()
+        self.refresh_button.raise_()
         self.tabWidget.addTab(self.tab_database, "")
         self.room_frame = QtWidgets.QFrame(self.centralwidget)
         self.room_frame.setGeometry(QtCore.QRect(10, 361, 441, 178))

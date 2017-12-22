@@ -57,7 +57,7 @@
      <cursorShape>ArrowCursor</cursorShape>
     </property>
     <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
+     <enum>Qt::StrongFocus</enum>
     </property>
     <property name="styleSheet">
      <string notr="true">QTabWidget:pane {
@@ -1922,7 +1922,7 @@ QTableWidget::item {
        <rect>
         <x>10</x>
         <y>5</y>
-        <width>500</width>
+        <width>461</width>
         <height>46</height>
        </rect>
       </property>
@@ -2099,60 +2099,6 @@ QTableWidget::item {
          </item>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="refresh_button">
-         <property name="minimumSize">
-          <size>
-           <width>31</width>
-           <height>31</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>31</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton{
-	background: transparent;
-	border: 0px;
-	image: url(:/icons/ui/refresh_normal.png);
-}
-
-QPushButton:hover {
-	image: url(:/icons/ui/refresh_hover.png);
-}
-
-QPushButton:pressed {
-	image: url(:/icons/ui/refresh_pressed.png);
-}
-
-</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/icons/ui/refresh.png</normaloff>:/icons/ui/refresh.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QLineEdit" name="search_lineedit">
@@ -2203,9 +2149,70 @@ QLineEdit:focus {
        <string>Search</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="refresh_button">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>17</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>31</width>
+        <height>31</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>31</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+	background: transparent;
+	border: 0px;
+	image: url(:/icons/ui/refresh_normal.png);
+}
+
+QPushButton:hover {
+	image: url(:/icons/ui/refresh_hover.png);
+}
+
+QPushButton:pressed {
+	image: url(:/icons/ui/refresh_pressed.png);
+}
+
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>:/icons/ui/refresh.png</normaloff>:/icons/ui/refresh.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </widget>
      <zorder>layoutWidget</zorder>
      <zorder>table</zorder>
      <zorder>search_lineedit</zorder>
+     <zorder>refresh_button</zorder>
     </widget>
    </widget>
    <widget class="QFrame" name="room_frame">
