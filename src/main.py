@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.9.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -1194,23 +1194,20 @@ class Ui_MainWindow(object):
 "    border: 0px;\n"
 "        border-bottom: 1px solid #9E9E9E;\n"
 "    color: #424242;\n"
-"    padding: 0 24px 0 4px;\n"
+"    padding: 0 4px 0 20px;\n"
 "    selection-background-color: #42A5F5;\n"
 "    selection-color: #ffffff;\n"
 "    background-image: url(:/icons/ui/search.png);\n"
 "    background-repeat: no-repeat;\n"
-"    background-position: right;\n"
+"    background-position: left;\n"
 "}\n"
 "\n"
 "QLineEdit:hover {\n"
 "        border-bottom: 1px solid #1565C0;\n"
-"    width: 30px;\n"
-"    background-image: url(:/icons/ui/search_hover.png);\n"
 "}\n"
 "\n"
 "QLineEdit:focus {\n"
 "        border-bottom: 1px solid #1565C0;\n"
-"    background-image: url(:/icons/ui/search_hover.png);\n"
 "}\n"
 "\n"
 "")

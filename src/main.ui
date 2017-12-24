@@ -2124,23 +2124,20 @@ QTableWidget::item {
 	border: 0px;
     	border-bottom: 1px solid #9E9E9E;
 	color: #424242;
-	padding: 0 24px 0 4px;
+	padding: 0 4px 0 20px;
 	selection-background-color: #42A5F5;
 	selection-color: #ffffff;
 	background-image: url(:/icons/ui/search.png);
 	background-repeat: no-repeat;
-	background-position: right;
+	background-position: left;
 }
 
 QLineEdit:hover {
     	border-bottom: 1px solid #1565C0;
-	width: 30px;
-	background-image: url(:/icons/ui/search_hover.png);
 }
 
 QLineEdit:focus {
     	border-bottom: 1px solid #1565C0;
-	background-image: url(:/icons/ui/search_hover.png);
 }
 
 </string>
