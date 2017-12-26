@@ -10,7 +10,7 @@ Icon=kontrol
 StartupWMClass=kontrol.py"
 
 text_bin="""#!/bin/bash
-python3 /home/amr/Projects/kontrol/kontrol.py"""
+python3 /home/amr/projects/kontrol/kontrol.py"""
 
 sudo echo "$text_desktop" > /usr/share/applications/kontrol.desktop
 sudo echo "$text_bin" > /usr/bin/kontrol
