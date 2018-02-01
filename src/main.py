@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.1
+# Created by: PyQt5 UI code generator 5.10
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -45,7 +45,7 @@ class Ui_MainWindow(object):
 "QTabWidget::tab-bar {\n"
 "    background: #ffffff;\n"
 "    border: 1px solid transparent;\n"
-"     left: 253px;\n"
+"     left: 203px;\n"
 "}\n"
 "\n"
 "QTabBar:tab { \n"
@@ -958,6 +958,51 @@ class Ui_MainWindow(object):
         self.out_irri_percentage.setAlignment(QtCore.Qt.AlignCenter)
         self.out_irri_percentage.setObjectName("out_irri_percentage")
         self.tabWidget.addTab(self.tab_outdoor, "")
+        self.tab_camera = QtWidgets.QWidget()
+        self.tab_camera.setObjectName("tab_camera")
+        self.start_stream_button = QtWidgets.QPushButton(self.tab_camera)
+        self.start_stream_button.setGeometry(QtCore.QRect(250, 120, 171, 61))
+        self.start_stream_button.setStyleSheet("QPushButton{\n"
+"  background: transparent;\n"
+"  border-radius: 2px;\n"
+"  border: 1px solid #1565C0;\n"
+"  color: #1565C0;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"  background: #42A5F5;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"  background: #64B5F6;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}")
+        self.start_stream_button.setObjectName("start_stream_button")
+        self.stop_stream_button = QtWidgets.QPushButton(self.tab_camera)
+        self.stop_stream_button.setGeometry(QtCore.QRect(480, 120, 171, 61))
+        self.stop_stream_button.setStyleSheet("QPushButton{\n"
+"  background: transparent;\n"
+"  border-radius: 2px;\n"
+"  border: 1px solid #C62828;\n"
+"  color: #C62828;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"  background: #EF5350;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"  background: #E57373;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}")
+        self.stop_stream_button.setObjectName("stop_stream_button")
+        self.tabWidget.addTab(self.tab_camera, "")
         self.tab_message = QtWidgets.QWidget()
         self.tab_message.setMouseTracking(True)
         self.tab_message.setObjectName("tab_message")
@@ -1789,6 +1834,9 @@ class Ui_MainWindow(object):
         self.out_irri_off_button.setText(_translate("MainWindow", "OFF"))
         self.out_irri_percentage.setText(_translate("MainWindow", "0%"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_outdoor), _translate("MainWindow", "Outdoor"))
+        self.start_stream_button.setText(_translate("MainWindow", "START STREAMING"))
+        self.stop_stream_button.setText(_translate("MainWindow", "STOP STREAMING"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_camera), _translate("MainWindow", "Camera"))
         self.message_send_button.setText(_translate("MainWindow", "Send"))
         self.message_clear_button.setText(_translate("MainWindow", "Clear"))
         self.message_text.setPlaceholderText(_translate("MainWindow", "Type your message here ..."))

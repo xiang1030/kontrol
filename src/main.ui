@@ -68,7 +68,7 @@
 QTabWidget::tab-bar {
 	background: #ffffff;
 	border: 1px solid transparent;
- 	left: 253px;
+ 	left: 203px;
 }
 
 QTabBar:tab { 
@@ -1580,6 +1580,77 @@ QPushButton:pressed {
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_camera">
+     <attribute name="title">
+      <string>Camera</string>
+     </attribute>
+     <widget class="QPushButton" name="start_stream_button">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>120</y>
+        <width>171</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+  background: transparent;
+  border-radius: 2px;
+  border: 1px solid #1565C0;
+  color: #1565C0;
+}
+
+QPushButton:hover {
+  background: #42A5F5;
+  border-width: 0px;
+  color: #ffffff;
+}
+
+QPushButton:pressed {
+  background: #64B5F6;
+  border-width: 0px;
+  color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>START STREAMING</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="stop_stream_button">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>120</y>
+        <width>171</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+  background: transparent;
+  border-radius: 2px;
+  border: 1px solid #C62828;
+  color: #C62828;
+}
+
+QPushButton:hover {
+  background: #EF5350;
+  border-width: 0px;
+  color: #ffffff;
+}
+
+QPushButton:pressed {
+  background: #E57373;
+  border-width: 0px;
+  color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>STOP STREAMING</string>
       </property>
      </widget>
     </widget>

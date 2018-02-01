@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QTextDocument
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
+from PyQt5.QtGui import QTextDocument, QImage, QPixmap
 from PyQt5.QtMultimedia import QSound
-from main import Ui_MainWindow
+from main import Ui_MainWindow as mainWindow
+from cam import Ui_MainWindow as camWindow
 import paho.mqtt.client as mqtt
 import mysql.connector
 import os
@@ -11,6 +13,7 @@ import sys
 import getpass
 import random
 import string
+import cv2
 
 user = getpass.getuser()
 
@@ -176,7 +179,42 @@ class get_message(QThread):
             self.msleep(250)
 
 
-class MainApp(QMainWindow, Ui_MainWindow):
+class Cam(QMainWindow, camWindow):
+
+    def __init__(self, parent=None):
+        super(Cam, self).__init__(parent)
+        QMainWindow.__init__(self)
+        self.setupUi(self)
+        self.image = None
+        self.camera()
+
+    def camera(self):
+        self.capture = cv2.VideoCapture("rtsp://192.168.1.16:554/ucast/11")
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_frame)
+        self.timer.start(5)
+
+    def update_frame(self):
+        ret, self.image = self.capture.read()
+        self.displayImage(self.image, 1)
+
+    def displayImage(self, img, window=1):
+        qformat = QImage.Format_Indexed8
+        if len(img.shape) == 3:
+            if img.shape[2] == 4:
+                qformat = QImage.Format_RGBA8888
+            else:
+                qformat = QImage.Format_RGB888
+        outImage = QImage(
+                img, img.shape[1], img.shape[0], img.strides[0], qformat)
+        outImage = outImage.rgbSwapped()
+        if window == 1:
+            self.imgLabel.setPixmap(QPixmap.fromImage(outImage))
+
+
+class MainApp(QMainWindow, mainWindow):
 
     def __init__(self, parent=None):
         super(MainApp, self).__init__(parent)
@@ -188,6 +226,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.conf_ui()
         self.conf_buttons()
         self.conf_sliders()
+        self.dialog = Cam(self)
         self.thread = get_message()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
@@ -203,6 +242,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
                 self.tabWidget.setCurrentIndex(2)
             elif event.key() == Qt.Key_4:
                 self.tabWidget.setCurrentIndex(3)
+            elif event.key() == Qt.Key_5:
+                self.tabWidget.setCurrentIndex(4)
 
     def closeEvent(self, event):
         if sys.platform == 'win32':
@@ -232,8 +273,9 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc.loop_start()
         self.mqttc.subscribe([
             ('indoor_light_cb', 1), ('indoor_fan_cb', 1), ('indoor_air_cb', 1),
-            ('indoor_curtain_cb', 1), ('indoor_door_cb', 1), ('indoor_temp_cb', 1),
-            ('outdoor_light_cb', 1), ('irrigation_cb', 1), ('alarm_cb', 1),
+            ('indoor_curtain_cb', 1), ('indoor_door_cb', 1),
+            ('indoor_temp_cb', 1), ('outdoor_light_cb', 1),
+            ('irrigation_cb', 1), ('alarm_cb', 1),
             ('outdoor_temp_cb', 1), ('outdoor_hum_cb', 1),
             ('indoor_alarm_cb', 1), ('outdoor_alarm_cb', 1)])
 
@@ -253,7 +295,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.in_air_auto_button.clicked.connect(self.button_in_air_auto)
         self.in_curtain_on_button.clicked.connect(self.button_in_curtain_on)
         self.in_curtain_off_button.clicked.connect(self.button_in_curtain_off)
-        self.in_curtain_auto_button.clicked.connect(self.button_in_curtain_auto)
+        self.in_curtain_auto_button.clicked.connect(
+                self.button_in_curtain_auto)
         self.in_door_open_button.clicked.connect(self.button_in_door_open)
         self.in_door_close_button.clicked.connect(self.button_in_door_close)
         self.in_open_button.clicked.connect(self.button_in_open)
@@ -275,6 +318,17 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.message_send_button.clicked.connect(self.button_message_send)
         self.message_clear_button.clicked.connect(self.button_message_clear)
         self.refresh_button.clicked.connect(self.db)
+
+        # Camera
+        self.start_stream_button.clicked.connect(self.button_start_stream)
+        self.stop_stream_button.clicked.connect(self.button_stop_stream)
+
+    # Camera
+    def button_start_stream(self):
+        self.dialog.show()
+
+    def button_stop_stream(self):
+        self.dialog.close()
 
     # indoor
     def button_in_light_on(self):
@@ -399,7 +453,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc.publish('indoor_light', int(self.in_light_slider.value()))
 
     def slider_in_light_(self):
-        self.in_light_percentage.setText(str(self.in_light_slider.value()) + '%')
+        self.in_light_percentage.setText(
+                str(self.in_light_slider.value()) + '%')
 
     def slider_in_fan(self):
         self.mqttc.publish('indoor_fan', int(self.in_fan_slider.value()))
@@ -411,13 +466,15 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc.publish('outdoor_light', int(self.out_light_slider.value()))
 
     def slider_out_light_(self):
-        self.out_light_percentage.setText(str(self.out_light_slider.value()) + '%')
+        self.out_light_percentage.setText(
+                str(self.out_light_slider.value()) + '%')
 
     def slider_out_irri(self):
         self.mqttc.publish('irrigation', int(self.out_irri_slider.value()))
 
     def slider_out_irri_(self):
-        self.out_irri_percentage.setText(str(self.out_irri_slider.value()) + '%')
+        self.out_irri_percentage.setText(
+                str(self.out_irri_slider.value()) + '%')
 
     def spin_ra(self):
         self.mqttc.publish('indoor_air', self.in_air_spinbox.value())
@@ -445,7 +502,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
                 self.in_light_label.setText('<p style="color:#C62828">OFF</p>')
                 self.in_light_level_label.setText('-')
             elif msg == 'AUTO':
-                self.in_light_label.setText('<p style="color:#1565C0">AUTO</p>')
+                self.in_light_label.setText(
+                        '<p style="color:#1565C0">AUTO</p>')
                 self.in_light_level_label.setText('-')
             else:
                 self.in_light_label.setText('<p style="color:#2E7D32">ON</p>')
@@ -486,7 +544,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
         elif topic == 'indoor_curtain_cb':
             if msg == 'ON':
-                self.in_curtain_label.setText('<p style="color:#2E7D32">ON</p>')
+                self.in_curtain_label.setText(
+                        '<p style="color:#2E7D32">ON</p>')
             elif msg == 'OFF':
                 self.in_curtain_label.setText(
                     '<p style="color:#C62828">OFF</p>')
@@ -526,10 +585,12 @@ class MainApp(QMainWindow, Ui_MainWindow):
                 self.out_light_level_label.setText(
                     '<p style="color:#2E7D32">100%</p>')
             elif msg == 'OFF':
-                self.out_light_label.setText('<p style="color:#C62828">OFF</p>')
+                self.out_light_label.setText(
+                        '<p style="color:#C62828">OFF</p>')
                 self.out_light_level_label.setText('-')
             elif msg == 'AUTO':
-                self.out_light_label.setText('<p style="color:#1565C0">AUTO</p>')
+                self.out_light_label.setText(
+                        '<p style="color:#1565C0">AUTO</p>')
                 self.out_light_level_label.setText('-')
             else:
                 self.out_light_label_setText('<p style="color:#2E7D32">ON</p>')
@@ -545,7 +606,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
                 self.out_irri_label.setText('<p style="color:#C62828">OFF</p>')
                 self.out_irri_level_label.setText('-')
             elif msg == 'AUTO':
-                self.out_irri_label.setText('<p style="color:#1565C0">AUTO</p>')
+                self.out_irri_label.setText(
+                        '<p style="color:#1565C0">AUTO</p>')
                 self.out_irri_level_label.setText('-')
             else:
                 self.out_irri_label.setText('<p style="color:#2E7D32">ON</p>')
