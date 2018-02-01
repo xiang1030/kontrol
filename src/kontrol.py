@@ -36,8 +36,12 @@ else:
 
 def on_message(client, userdata, message):
     msg = str(message.payload.decode('utf-8'))
+    msg_list = msg.split('!')
+    if msg_list[len(msg_list)-1] == '':
+        del msg_list[len(msg_list)-1]
     with open(messages_path, 'w') as op:
-        op.write(msg + message.topic)
+        for l in msg_list:
+            op.write(l + message.topic + '\n')
         op.close()
 
 
@@ -498,7 +502,7 @@ class MainApp(QMainWindow, mainWindow):
         if sys.platform == 'win32':
             song_path = 'C:/Program Files (x86)/kontrol/alarm.wav'
         elif sys.platform == 'linux':
-            song_path = '/home/amr/Projects/kontrol/alarm.wav'
+            song_path = '/home/amr/projects/kontrol/alarm.wav'
         song = QSound(song_path)
         song.setLoops(-1)
         song.play()
