@@ -21,7 +21,12 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.imgLabel = QtWidgets.QLabel(self.centralwidget)
         self.imgLabel.setGeometry(QtCore.QRect(0, 0, 1280, 720))
+        font = QtGui.QFont()
+        font.setPointSize(32)
+        self.imgLabel.setFont(font)
         self.imgLabel.setText("")
+        self.imgLabel.setTextFormat(QtCore.Qt.PlainText)
+        self.imgLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.imgLabel.setObjectName("imgLabel")
         MainWindow.setCentralWidget(self.centralwidget)
 

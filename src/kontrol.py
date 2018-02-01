@@ -197,27 +197,30 @@ class Cam(QMainWindow, camWindow):
         self.camera()
 
     def camera(self):
-        self.capture = cv2.VideoCapture("rtsp://192.168.1.16:554/ucast/11")
+        self.capture = cv2.VideoCapture("rtsp://192.168.1.12:554/ucast/11")
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(5)
 
     def update_frame(self):
-        ret, self.image = self.capture.read()
-        if self.screen_w <= 1280:
-            screen_w = self.screen_w
-        else:
-            screen_w = 1280
-        r = screen_w / self.image.shape[1]
-        screen_h = int(self.image.shape[0] * r)
-        if screen_h <= self.screen_h:
-            dim = (screen_w, screen_h)
-        else:
-            dim = (screen_w, 720)
-        self.resized = cv2.resize(
-                self.image, dim, interpolation=cv2.INTER_AREA)
-        self.displayImage(self.resized, 1)
-        self.setMinimumSize(dim[0], dim[1])
+        try:
+            ret, self.image = self.capture.read()
+            if self.screen_w <= 1280:
+                screen_w = self.screen_w
+            else:
+                screen_w = 1280
+            r = screen_w / self.image.shape[1]
+            screen_h = int(self.image.shape[0] * r)
+            if screen_h <= self.screen_h:
+                dim = (screen_w, screen_h)
+            else:
+                dim = (screen_w, 720)
+            self.resized = cv2.resize(
+                    self.image, dim, interpolation=cv2.INTER_AREA)
+            self.displayImage(self.resized, 1)
+            self.setMinimumSize(dim[0], dim[1])
+        except:
+            self.imgLabel.setText('Camera is not available!')
 
     def displayImage(self, img, window=1):
         qformat = QImage.Format_Indexed8
