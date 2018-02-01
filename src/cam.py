@@ -11,7 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        MainWindow.setWindowModality(QtCore.Qt.WindowModal)
         MainWindow.resize(1280, 720)
+        MainWindow.setFocusPolicy(QtCore.Qt.NoFocus)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/png/kontrol_24.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
