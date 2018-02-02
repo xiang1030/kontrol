@@ -1587,7 +1587,7 @@ QPushButton:pressed {
      <attribute name="title">
       <string>Camera</string>
      </attribute>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>171</x>
@@ -3022,7 +3022,7 @@ color: #424242;</string>
        <x>10</x>
        <y>20</y>
        <width>71</width>
-       <height>51</height>
+       <height>81</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3047,6 +3047,18 @@ color: #424242;</string>
         </property>
         <property name="text">
          <string>Irrigation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Camera</string>
         </property>
        </widget>
       </item>
@@ -3356,6 +3368,30 @@ QPushButton:pressed {
      </property>
      <property name="text">
       <string>OPEN</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="out_camera_label">
+     <property name="geometry">
+      <rect>
+       <x>81</x>
+       <y>80</y>
+       <width>91</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

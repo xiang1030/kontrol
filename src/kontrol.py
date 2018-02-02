@@ -204,6 +204,7 @@ class Camera(QMainWindow, camWindow):
 
     def start_stream(self):
         self.capture = cv2.VideoCapture('rtsp://192.168.1.12:554/ucast/11')
+        self.m = MainApp(self)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(5)
@@ -242,11 +243,12 @@ class Camera(QMainWindow, camWindow):
             self.imgLabel.setPixmap(QPixmap.fromImage(outImage))
 
     def start_record(self):
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        self.capture = cv2.VideoCapture('rtsp://192.168.1.12:554/ucast/11')
+        self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
         self.out = cv2.VideoWriter(
-            '{}.mp4'.format(date.strftime(
+            '{}.avi'.format(date.strftime(
                 datetime.now(), '%Y%m%d_%H%M%S')),
-            fourcc, 20.0, (1280, 720))
+            self.fourcc, 20.0, (1280, 720))
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.save_record)
         self.timer.start(5)
@@ -260,8 +262,11 @@ class Camera(QMainWindow, camWindow):
             self.imgLabel.setText('Camera is not available!')
 
     def stop_camera(self):
-        self.out.release()
-        self.timer.stop()
+        try:
+            self.out.release()
+            self.timer.stop()
+        except Exception:
+            pass
 
 
 class MainApp(QMainWindow, mainWindow):
@@ -276,7 +281,7 @@ class MainApp(QMainWindow, mainWindow):
         self.conf_ui()
         self.conf_buttons()
         self.conf_sliders()
-        self.dialog = Camera(self)
+        self.dialog = Camera()
         self.thread = get_message()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
@@ -379,17 +384,25 @@ class MainApp(QMainWindow, mainWindow):
     def button_stream(self):
         self.dialog.start_stream()
         self.dialog.show()
+        self.out_camera_label.setText(
+            '<p style="color:#2E7D32">Streaming</p>')
 
     def button_record(self):
         self.dialog.start_record()
+        self.out_camera_label.setText(
+            '<p style="color:#2E7D32">Recording</p>')
 
     def button_stream_record(self):
         self.button_stream()
         self.button_record()
+        self.out_camera_label.setText(
+            '<p style="color:#2E7D32">Recording</p>')
 
     def button_stop_camera(self):
         self.dialog.stop_camera()
         self.dialog.close()
+        self.out_camera_label.setText(
+            '<p style="color:#C62828">Sleeping</p>')
 
     # indoor
     def button_in_light_on(self):
