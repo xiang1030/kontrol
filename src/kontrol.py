@@ -188,22 +188,26 @@ class get_message(QThread):
 
 class Camera(QMainWindow, camWindow):
 
+    signal = pyqtSignal(str, str)
+
     def __init__(self, parent=None):
         super(Camera, self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.setMaximumSize(1280, 720)
         self.image = None
+        self.stream_url = 'rtsp://192.168.1.13:554/ucast/11'
         rect = QDesktopWidget().availableGeometry()
         self.screen_h = rect.height()
         self.screen_w = rect.width()
 
     def closeEvent(self, event):
         self.stop_camera()
+        self.signal.emit('stop', 'camera')
         event.accept()
 
     def start_stream(self):
-        self.capture = cv2.VideoCapture('rtsp://192.168.1.12:554/ucast/11')
+        self.capture = cv2.VideoCapture(self.stream_url)
         self.m = MainApp(self)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
@@ -243,12 +247,12 @@ class Camera(QMainWindow, camWindow):
             self.imgLabel.setPixmap(QPixmap.fromImage(outImage))
 
     def start_record(self):
-        self.capture = cv2.VideoCapture('rtsp://192.168.1.12:554/ucast/11')
+        self.capture = cv2.VideoCapture(self.stream_url)
         self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
         self.out = cv2.VideoWriter(
             '{}.avi'.format(date.strftime(
                 datetime.now(), '%Y%m%d_%H%M%S')),
-            self.fourcc, 20.0, (1280, 720))
+            self.fourcc, 10.0, (1280, 720))
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.save_record)
         self.timer.start(5)
@@ -282,6 +286,7 @@ class MainApp(QMainWindow, mainWindow):
         self.conf_buttons()
         self.conf_sliders()
         self.dialog = Camera()
+        self.dialog.signal.connect(self.conf_labels)
         self.thread = get_message()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
@@ -716,6 +721,9 @@ class MainApp(QMainWindow, mainWindow):
 
         elif topic == 'alarm_cb':
             self.alarm(msg)
+
+        elif msg == 'stop':
+            self.button_stop_camera()
 
     def db(self):
         row = 0
