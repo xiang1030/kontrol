@@ -24,6 +24,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(32)
         self.imgLabel.setFont(font)
+        self.imgLabel.setStyleSheet("color: #424242;")
         self.imgLabel.setText("")
         self.imgLabel.setTextFormat(QtCore.Qt.PlainText)
         self.imgLabel.setAlignment(QtCore.Qt.AlignCenter)

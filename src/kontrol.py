@@ -6,14 +6,16 @@ from PyQt5.QtGui import QTextDocument, QImage, QPixmap
 from PyQt5.QtMultimedia import QSound
 from main import Ui_MainWindow as mainWindow
 from cam import Ui_MainWindow as camWindow
+from datetime import datetime, date
 import paho.mqtt.client as mqtt
+import cv2
 import mysql.connector
 import os
 import sys
 import getpass
 import random
 import string
-import cv2
+
 
 user = getpass.getuser()
 
@@ -37,8 +39,8 @@ else:
 def on_message(client, userdata, message):
     msg = str(message.payload.decode('utf-8'))
     msg_list = msg.split('!')
-    if msg_list[len(msg_list)-1] == '':
-        del msg_list[len(msg_list)-1]
+    if msg_list[len(msg_list) - 1] == '':
+        del msg_list[len(msg_list) - 1]
     with open(messages_path, 'w') as op:
         for l in msg_list:
             op.write(l + message.topic + '\n')
@@ -46,6 +48,7 @@ def on_message(client, userdata, message):
 
 
 class get_message(QThread):
+
     signal = pyqtSignal(str, str)
 
     def __init__(self, parent=None):
@@ -183,10 +186,10 @@ class get_message(QThread):
             self.msleep(250)
 
 
-class Cam(QMainWindow, camWindow):
+class Camera(QMainWindow, camWindow):
 
     def __init__(self, parent=None):
-        super(Cam, self).__init__(parent)
+        super(Camera, self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.setMaximumSize(1280, 720)
@@ -194,10 +197,13 @@ class Cam(QMainWindow, camWindow):
         rect = QDesktopWidget().availableGeometry()
         self.screen_h = rect.height()
         self.screen_w = rect.width()
-        self.camera()
 
-    def camera(self):
-        self.capture = cv2.VideoCapture("rtsp://192.168.1.12:554/ucast/11")
+    def closeEvent(self, event):
+        self.stop_camera()
+        event.accept()
+
+    def start_stream(self):
+        self.capture = cv2.VideoCapture('rtsp://192.168.1.12:554/ucast/11')
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(5)
@@ -212,14 +218,14 @@ class Cam(QMainWindow, camWindow):
             r = screen_w / self.image.shape[1]
             screen_h = int(self.image.shape[0] * r)
             if screen_h <= self.screen_h:
-                dim = (screen_w, screen_h)
+                self.dim = (screen_w, screen_h)
             else:
-                dim = (screen_w, 720)
+                self.dim = (screen_w, 720)
             self.resized = cv2.resize(
-                    self.image, dim, interpolation=cv2.INTER_AREA)
+                self.image, self.dim, interpolation=cv2.INTER_AREA)
             self.displayImage(self.resized, 1)
-            self.setMinimumSize(dim[0], dim[1])
-        except:
+            self.setMinimumSize(self.dim[0], self.dim[1])
+        except Exception:
             self.imgLabel.setText('Camera is not available!')
 
     def displayImage(self, img, window=1):
@@ -230,10 +236,32 @@ class Cam(QMainWindow, camWindow):
             else:
                 qformat = QImage.Format_RGB888
         outImage = QImage(
-                img, img.shape[1], img.shape[0], img.strides[0], qformat)
+            img, img.shape[1], img.shape[0], img.strides[0], qformat)
         outImage = outImage.rgbSwapped()
         if window == 1:
             self.imgLabel.setPixmap(QPixmap.fromImage(outImage))
+
+    def start_record(self):
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        self.out = cv2.VideoWriter(
+            '{}.mp4'.format(date.strftime(
+                datetime.now(), '%Y%m%d_%H%M%S')),
+            fourcc, 20.0, (1280, 720))
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.save_record)
+        self.timer.start(5)
+
+    def save_record(self):
+        try:
+            ret, image = self.capture.read()
+            self.out.write(image)
+        except Exception:
+            self.show()
+            self.imgLabel.setText('Camera is not available!')
+
+    def stop_camera(self):
+        self.out.release()
+        self.timer.stop()
 
 
 class MainApp(QMainWindow, mainWindow):
@@ -248,7 +276,7 @@ class MainApp(QMainWindow, mainWindow):
         self.conf_ui()
         self.conf_buttons()
         self.conf_sliders()
-        self.dialog = Cam(self)
+        self.dialog = Camera(self)
         self.thread = get_message()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
@@ -271,7 +299,7 @@ class MainApp(QMainWindow, mainWindow):
         if sys.platform == 'win32':
             os.system('taskkill /f /im kontrol.exe')
         elif sys.platform == 'linux':
-            os.system('pkill python3; pkill python; pkill kontrol')
+            os.system('pkill kontrol')
         event.accept()
 
     def file_dir(self):
@@ -318,7 +346,7 @@ class MainApp(QMainWindow, mainWindow):
         self.in_curtain_on_button.clicked.connect(self.button_in_curtain_on)
         self.in_curtain_off_button.clicked.connect(self.button_in_curtain_off)
         self.in_curtain_auto_button.clicked.connect(
-                self.button_in_curtain_auto)
+            self.button_in_curtain_auto)
         self.in_door_open_button.clicked.connect(self.button_in_door_open)
         self.in_door_close_button.clicked.connect(self.button_in_door_close)
         self.in_open_button.clicked.connect(self.button_in_open)
@@ -342,14 +370,25 @@ class MainApp(QMainWindow, mainWindow):
         self.refresh_button.clicked.connect(self.db)
 
         # Camera
-        self.start_stream_button.clicked.connect(self.button_start_stream)
-        self.stop_stream_button.clicked.connect(self.button_stop_stream)
+        self.stream_button.clicked.connect(self.button_stream)
+        self.record_button.clicked.connect(self.button_record)
+        self.stream_record_button.clicked.connect(self.button_stream_record)
+        self.stop_camera_button.clicked.connect(self.button_stop_camera)
 
     # Camera
-    def button_start_stream(self):
+    def button_stream(self):
+        self.dialog.start_stream()
         self.dialog.show()
 
-    def button_stop_stream(self):
+    def button_record(self):
+        self.dialog.start_record()
+
+    def button_stream_record(self):
+        self.button_stream()
+        self.button_record()
+
+    def button_stop_camera(self):
+        self.dialog.stop_camera()
         self.dialog.close()
 
     # indoor
@@ -476,7 +515,7 @@ class MainApp(QMainWindow, mainWindow):
 
     def slider_in_light_(self):
         self.in_light_percentage.setText(
-                str(self.in_light_slider.value()) + '%')
+            str(self.in_light_slider.value()) + '%')
 
     def slider_in_fan(self):
         self.mqttc.publish('indoor_fan', int(self.in_fan_slider.value()))
@@ -489,14 +528,14 @@ class MainApp(QMainWindow, mainWindow):
 
     def slider_out_light_(self):
         self.out_light_percentage.setText(
-                str(self.out_light_slider.value()) + '%')
+            str(self.out_light_slider.value()) + '%')
 
     def slider_out_irri(self):
         self.mqttc.publish('irrigation', int(self.out_irri_slider.value()))
 
     def slider_out_irri_(self):
         self.out_irri_percentage.setText(
-                str(self.out_irri_slider.value()) + '%')
+            str(self.out_irri_slider.value()) + '%')
 
     def spin_ra(self):
         self.mqttc.publish('indoor_air', self.in_air_spinbox.value())
@@ -514,7 +553,6 @@ class MainApp(QMainWindow, mainWindow):
             song.stop()
 
     def conf_labels(self, msg, topic):
-
         if topic == 'indoor_light_cb':
             if msg == 'ON':
                 self.in_light_label.setText('<p style="color:#2E7D32">ON</p>')
@@ -525,7 +563,7 @@ class MainApp(QMainWindow, mainWindow):
                 self.in_light_level_label.setText('-')
             elif msg == 'AUTO':
                 self.in_light_label.setText(
-                        '<p style="color:#1565C0">AUTO</p>')
+                    '<p style="color:#1565C0">AUTO</p>')
                 self.in_light_level_label.setText('-')
             else:
                 self.in_light_label.setText('<p style="color:#2E7D32">ON</p>')
@@ -567,7 +605,7 @@ class MainApp(QMainWindow, mainWindow):
         elif topic == 'indoor_curtain_cb':
             if msg == 'ON':
                 self.in_curtain_label.setText(
-                        '<p style="color:#2E7D32">ON</p>')
+                    '<p style="color:#2E7D32">ON</p>')
             elif msg == 'OFF':
                 self.in_curtain_label.setText(
                     '<p style="color:#C62828">OFF</p>')
@@ -608,11 +646,11 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#2E7D32">100%</p>')
             elif msg == 'OFF':
                 self.out_light_label.setText(
-                        '<p style="color:#C62828">OFF</p>')
+                    '<p style="color:#C62828">OFF</p>')
                 self.out_light_level_label.setText('-')
             elif msg == 'AUTO':
                 self.out_light_label.setText(
-                        '<p style="color:#1565C0">AUTO</p>')
+                    '<p style="color:#1565C0">AUTO</p>')
                 self.out_light_level_label.setText('-')
             else:
                 self.out_light_label_setText('<p style="color:#2E7D32">ON</p>')
@@ -629,7 +667,7 @@ class MainApp(QMainWindow, mainWindow):
                 self.out_irri_level_label.setText('-')
             elif msg == 'AUTO':
                 self.out_irri_label.setText(
-                        '<p style="color:#1565C0">AUTO</p>')
+                    '<p style="color:#1565C0">AUTO</p>')
                 self.out_irri_level_label.setText('-')
             else:
                 self.out_irri_label.setText('<p style="color:#2E7D32">ON</p>')

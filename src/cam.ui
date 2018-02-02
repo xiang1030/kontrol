@@ -38,6 +38,9 @@
       <pointsize>32</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: #424242;</string>
+    </property>
     <property name="text">
      <string/>
     </property>

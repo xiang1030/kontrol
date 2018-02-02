@@ -960,9 +960,44 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_outdoor, "")
         self.tab_camera = QtWidgets.QWidget()
         self.tab_camera.setObjectName("tab_camera")
-        self.start_stream_button = QtWidgets.QPushButton(self.tab_camera)
-        self.start_stream_button.setGeometry(QtCore.QRect(250, 120, 171, 61))
-        self.start_stream_button.setStyleSheet("QPushButton{\n"
+        self.widget = QtWidgets.QWidget(self.tab_camera)
+        self.widget.setGeometry(QtCore.QRect(171, 81, 575, 154))
+        self.widget.setObjectName("widget")
+        self.gridLayout = QtWidgets.QGridLayout(self.widget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setSpacing(30)
+        self.gridLayout.setObjectName("gridLayout")
+        self.stream_button = QtWidgets.QPushButton(self.widget)
+        self.stream_button.setMinimumSize(QtCore.QSize(171, 61))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.stream_button.setFont(font)
+        self.stream_button.setStyleSheet("QPushButton{\n"
+"  background-color: transparent;\n"
+"  border-radius: 2px;\n"
+"  border: 1px solid #2E7D32;\n"
+"  color: #2E7D32;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"  background: #66BB6A;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"  background: #81C784;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}")
+        self.stream_button.setObjectName("stream_button")
+        self.gridLayout.addWidget(self.stream_button, 0, 0, 1, 1)
+        self.stream_record_button = QtWidgets.QPushButton(self.widget)
+        self.stream_record_button.setMinimumSize(QtCore.QSize(171, 61))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.stream_record_button.setFont(font)
+        self.stream_record_button.setStyleSheet("QPushButton{\n"
 "  background: transparent;\n"
 "  border-radius: 2px;\n"
 "  border: 1px solid #1565C0;\n"
@@ -980,10 +1015,39 @@ class Ui_MainWindow(object):
 "  border-width: 0px;\n"
 "  color: #ffffff;\n"
 "}")
-        self.start_stream_button.setObjectName("start_stream_button")
-        self.stop_stream_button = QtWidgets.QPushButton(self.tab_camera)
-        self.stop_stream_button.setGeometry(QtCore.QRect(480, 120, 171, 61))
-        self.stop_stream_button.setStyleSheet("QPushButton{\n"
+        self.stream_record_button.setObjectName("stream_record_button")
+        self.gridLayout.addWidget(self.stream_record_button, 0, 1, 1, 1)
+        self.record_button = QtWidgets.QPushButton(self.widget)
+        self.record_button.setMinimumSize(QtCore.QSize(171, 61))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.record_button.setFont(font)
+        self.record_button.setStyleSheet("QPushButton{\n"
+"  background-color: transparent;\n"
+"  border-radius: 2px;\n"
+"  border: 1px solid #2E7D32;\n"
+"  color: #2E7D32;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"  background: #66BB6A;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"  background: #81C784;\n"
+"  border-width: 0px;\n"
+"  color: #ffffff;\n"
+"}")
+        self.record_button.setObjectName("record_button")
+        self.gridLayout.addWidget(self.record_button, 0, 2, 1, 1)
+        self.stop_camera_button = QtWidgets.QPushButton(self.widget)
+        self.stop_camera_button.setMinimumSize(QtCore.QSize(171, 61))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.stop_camera_button.setFont(font)
+        self.stop_camera_button.setStyleSheet("QPushButton{\n"
 "  background: transparent;\n"
 "  border-radius: 2px;\n"
 "  border: 1px solid #C62828;\n"
@@ -1001,7 +1065,8 @@ class Ui_MainWindow(object):
 "  border-width: 0px;\n"
 "  color: #ffffff;\n"
 "}")
-        self.stop_stream_button.setObjectName("stop_stream_button")
+        self.stop_camera_button.setObjectName("stop_camera_button")
+        self.gridLayout.addWidget(self.stop_camera_button, 1, 1, 1, 1)
         self.tabWidget.addTab(self.tab_camera, "")
         self.tab_message = QtWidgets.QWidget()
         self.tab_message.setMouseTracking(True)
@@ -1834,8 +1899,10 @@ class Ui_MainWindow(object):
         self.out_irri_off_button.setText(_translate("MainWindow", "OFF"))
         self.out_irri_percentage.setText(_translate("MainWindow", "0%"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_outdoor), _translate("MainWindow", "Outdoor"))
-        self.start_stream_button.setText(_translate("MainWindow", "START STREAMING"))
-        self.stop_stream_button.setText(_translate("MainWindow", "STOP STREAMING"))
+        self.stream_button.setText(_translate("MainWindow", "STREAM ONLY"))
+        self.stream_record_button.setText(_translate("MainWindow", "STREAM and RECORD"))
+        self.record_button.setText(_translate("MainWindow", "RECORD ONLY"))
+        self.stop_camera_button.setText(_translate("MainWindow", "STOP"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_camera), _translate("MainWindow", "Camera"))
         self.message_send_button.setText(_translate("MainWindow", "Send"))
         self.message_clear_button.setText(_translate("MainWindow", "Clear"))
