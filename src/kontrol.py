@@ -232,6 +232,7 @@ class Camera(QMainWindow, camWindow):
             self.setMinimumSize(self.dim[0], self.dim[1])
         except Exception:
             self.imgLabel.setText('Camera is not available!')
+            self.stop_camera()
 
     def displayImage(self, img, window=1):
         qformat = QImage.Format_Indexed8
