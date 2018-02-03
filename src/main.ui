@@ -1627,7 +1627,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>STREAM ONLY</string>
+          <string>STREAM</string>
          </property>
         </widget>
        </item>
@@ -1703,7 +1703,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>RECORD ONLY</string>
+          <string>RECORD</string>
          </property>
         </widget>
        </item>
