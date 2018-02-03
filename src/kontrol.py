@@ -188,8 +188,6 @@ class get_message(QThread):
 
 class Camera(QMainWindow, camWindow):
 
-    signal = pyqtSignal(str, str)
-
     def __init__(self, parent=None):
         super(Camera, self).__init__(parent)
         QMainWindow.__init__(self)
