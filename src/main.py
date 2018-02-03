@@ -170,19 +170,13 @@ class Ui_MainWindow(object):
 "  }\n"
 "\n"
 "QComboBox {\n"
-"    background-color: transparent;\n"
-"    border-radius: 0px;\n"
-"    border: 0px;\n"
-"    border-bottom: 1px solid #9E9E9E;\n"
+"    background: #EEEEEE;\n"
+"    border: 1px solid transparent;\n"
+"    border-radius: 2px;\n"
 "    color: #424242;\n"
-"    padding: 0 4px ;\n"
+"    padding: 0 8px ;\n"
 "\n"
 "}\n"
-"\n"
-"QComboBox:hover {\n"
-"    border-bottom: 1px solid #1565C0;\n"
-"}\n"
-"\n"
 "\n"
 "QComboBox::drop-down {\n"
 "    subcontrol-origin: padding;\n"
@@ -199,7 +193,6 @@ class Ui_MainWindow(object):
 "\n"
 "QComboBox QAbstractItemView {\n"
 "    border: 0px;\n"
-"\n"
 "    color: #424242;\n"
 "    position: relative;\n"
 "    padding: 4px 4px;\n"
@@ -1224,7 +1217,7 @@ class Ui_MainWindow(object):
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         self.table.setItem(1, 3, item)
         self.layoutWidget1 = QtWidgets.QWidget(self.tab_database)
-        self.layoutWidget1.setGeometry(QtCore.QRect(10, 5, 461, 46))
+        self.layoutWidget1.setGeometry(QtCore.QRect(10, 5, 501, 46))
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget1)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -1293,37 +1286,7 @@ class Ui_MainWindow(object):
         self.subject_combobox.addItem("")
         self.subject_combobox.addItem("")
         self.horizontalLayout.addWidget(self.subject_combobox)
-        self.search_lineedit = QtWidgets.QLineEdit(self.tab_database)
-        self.search_lineedit.setGeometry(QtCore.QRect(720, 12, 181, 31))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.search_lineedit.setFont(font)
-        self.search_lineedit.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.search_lineedit.setStyleSheet("QLineEdit {\n"
-"    background: transparent;\n"
-"    border: 0px;\n"
-"        border-bottom: 1px solid #9E9E9E;\n"
-"    color: #424242;\n"
-"    padding: 0 4px 0 20px;\n"
-"    selection-background-color: #42A5F5;\n"
-"    selection-color: #ffffff;\n"
-"    background-image: url(:/icons/ui/search.png);\n"
-"    background-repeat: no-repeat;\n"
-"    background-position: left;\n"
-"}\n"
-"\n"
-"QLineEdit:hover {\n"
-"        border-bottom: 1px solid #1565C0;\n"
-"}\n"
-"\n"
-"QLineEdit:focus {\n"
-"        border-bottom: 1px solid #1565C0;\n"
-"}\n"
-"\n"
-"")
-        self.search_lineedit.setObjectName("search_lineedit")
-        self.refresh_button = QtWidgets.QPushButton(self.tab_database)
-        self.refresh_button.setGeometry(QtCore.QRect(480, 17, 31, 31))
+        self.refresh_button = QtWidgets.QPushButton(self.layoutWidget1)
         self.refresh_button.setMinimumSize(QtCore.QSize(31, 31))
         self.refresh_button.setMaximumSize(QtCore.QSize(31, 16777215))
         font = QtGui.QFont()
@@ -1331,8 +1294,9 @@ class Ui_MainWindow(object):
         self.refresh_button.setFont(font)
         self.refresh_button.setFocusPolicy(QtCore.Qt.NoFocus)
         self.refresh_button.setStyleSheet("QPushButton{\n"
-"    background: transparent;\n"
+"    background: #EEEEEE;\n"
 "    border: 0px;\n"
+"    border-radius: 2px;\n"
 "    image: url(:/icons/ui/refresh_normal.png);\n"
 "}\n"
 "\n"
@@ -1351,10 +1315,41 @@ class Ui_MainWindow(object):
         self.refresh_button.setIcon(icon1)
         self.refresh_button.setIconSize(QtCore.QSize(20, 20))
         self.refresh_button.setObjectName("refresh_button")
+        self.horizontalLayout.addWidget(self.refresh_button)
+        self.search_lineedit = QtWidgets.QLineEdit(self.tab_database)
+        self.search_lineedit.setGeometry(QtCore.QRect(720, 12, 181, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.search_lineedit.setFont(font)
+        self.search_lineedit.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.search_lineedit.setStyleSheet("QLineEdit {\n"
+"    background: #EEEEEE;\n"
+"    border: 1px solid transparent;\n"
+"    border-radius: 2px;\n"
+"    color: #424242;\n"
+"    padding: 0 4px 0 30px;\n"
+"    selection-background-color: #42A5F5;\n"
+"    selection-color: #ffffff;\n"
+"}\n"
+"\n"
+"QLineEdit:focus {\n"
+"    background: transparent;\n"
+"    border-color: #9E9E9E;\n"
+"}\n"
+"\n"
+"")
+        self.search_lineedit.setObjectName("search_lineedit")
+        self.label_2 = QtWidgets.QLabel(self.tab_database)
+        self.label_2.setGeometry(QtCore.QRect(727, 19, 21, 17))
+        self.label_2.setStyleSheet("    background-color: transparent;\n"
+"    background-image: url(:/icons/ui/search.png);\n"
+"    background-repeat: no-repeat;")
+        self.label_2.setText("")
+        self.label_2.setObjectName("label_2")
         self.layoutWidget.raise_()
         self.table.raise_()
         self.search_lineedit.raise_()
-        self.refresh_button.raise_()
+        self.label_2.raise_()
         self.tabWidget.addTab(self.tab_database, "")
         self.room_frame = QtWidgets.QFrame(self.centralwidget)
         self.room_frame.setGeometry(QtCore.QRect(10, 361, 441, 178))

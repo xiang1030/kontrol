@@ -193,19 +193,13 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
   }
 
 QComboBox {
-	background-color: transparent;
-	border-radius: 0px;
-	border: 0px;
-    border-bottom: 1px solid #9E9E9E;
+	background: #EEEEEE;
+    border: 1px solid transparent;
+	border-radius: 2px;
 	color: #424242;
-	padding: 0 4px ;
+	padding: 0 8px ;
 
 }
-
-QComboBox:hover {
-    border-bottom: 1px solid #1565C0;
-}
-
 
 QComboBox::drop-down {
 	subcontrol-origin: padding;
@@ -222,7 +216,6 @@ QComboBox::down-arrow {
 
 QComboBox QAbstractItemView {
 	border: 0px;
-
 	color: #424242;
     position: relative;
     padding: 4px 4px;
@@ -2094,7 +2087,7 @@ QTableWidget::item {
        <rect>
         <x>10</x>
         <y>5</y>
-        <width>461</width>
+        <width>501</width>
         <height>46</height>
        </rect>
       </property>
@@ -2271,6 +2264,61 @@ QTableWidget::item {
          </item>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="refresh_button">
+         <property name="minimumSize">
+          <size>
+           <width>31</width>
+           <height>31</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>31</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton{
+	background: #EEEEEE;
+	border: 0px;
+	border-radius: 2px;
+	image: url(:/icons/ui/refresh_normal.png);
+}
+
+QPushButton:hover {
+	image: url(:/icons/ui/refresh_hover.png);
+}
+
+QPushButton:pressed {
+	image: url(:/icons/ui/refresh_pressed.png);
+}
+
+</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/icons/ui/refresh.png</normaloff>:/icons/ui/refresh.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QLineEdit" name="search_lineedit">
@@ -2292,24 +2340,18 @@ QTableWidget::item {
       </property>
       <property name="styleSheet">
        <string notr="true">QLineEdit {
-	background: transparent;
-	border: 0px;
-    	border-bottom: 1px solid #9E9E9E;
+	background: #EEEEEE;
+    border: 1px solid transparent;
+	border-radius: 2px;
 	color: #424242;
-	padding: 0 4px 0 20px;
+	padding: 0 4px 0 30px;
 	selection-background-color: #42A5F5;
 	selection-color: #ffffff;
-	background-image: url(:/icons/ui/search.png);
-	background-repeat: no-repeat;
-	background-position: left;
-}
-
-QLineEdit:hover {
-    	border-bottom: 1px solid #1565C0;
 }
 
 QLineEdit:focus {
-    	border-bottom: 1px solid #1565C0;
+	background: transparent;
+    border-color: #9E9E9E;
 }
 
 </string>
@@ -2318,70 +2360,28 @@ QLineEdit:focus {
        <string>Search</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="refresh_button">
+     <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>17</y>
-        <width>31</width>
-        <height>31</height>
+        <x>727</x>
+        <y>19</y>
+        <width>21</width>
+        <height>17</height>
        </rect>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>31</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>31</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
       <property name="styleSheet">
-       <string notr="true">QPushButton{
-	background: transparent;
-	border: 0px;
-	image: url(:/icons/ui/refresh_normal.png);
-}
-
-QPushButton:hover {
-	image: url(:/icons/ui/refresh_hover.png);
-}
-
-QPushButton:pressed {
-	image: url(:/icons/ui/refresh_pressed.png);
-}
-
-</string>
+       <string notr="true">	background-color: transparent;
+	background-image: url(:/icons/ui/search.png);
+	background-repeat: no-repeat;</string>
       </property>
       <property name="text">
        <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>:/icons/ui/refresh.png</normaloff>:/icons/ui/refresh.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
       </property>
      </widget>
      <zorder>layoutWidget</zorder>
      <zorder>table</zorder>
      <zorder>search_lineedit</zorder>
-     <zorder>refresh_button</zorder>
+     <zorder>label_2</zorder>
     </widget>
    </widget>
    <widget class="QFrame" name="room_frame">
