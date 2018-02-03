@@ -965,6 +965,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.stream_button.setFont(font)
+        self.stream_button.setFocusPolicy(QtCore.Qt.NoFocus)
         self.stream_button.setStyleSheet("QPushButton{\n"
 "  background-color: transparent;\n"
 "  border-radius: 2px;\n"
@@ -990,6 +991,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.stream_record_button.setFont(font)
+        self.stream_record_button.setFocusPolicy(QtCore.Qt.NoFocus)
         self.stream_record_button.setStyleSheet("QPushButton{\n"
 "  background: transparent;\n"
 "  border-radius: 2px;\n"
@@ -1015,6 +1017,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.record_button.setFont(font)
+        self.record_button.setFocusPolicy(QtCore.Qt.NoFocus)
         self.record_button.setStyleSheet("QPushButton{\n"
 "  background-color: transparent;\n"
 "  border-radius: 2px;\n"
@@ -1040,6 +1043,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.stop_camera_button.setFont(font)
+        self.stop_camera_button.setFocusPolicy(QtCore.Qt.NoFocus)
         self.stop_camera_button.setStyleSheet("QPushButton{\n"
 "  background: transparent;\n"
 "  border-radius: 2px;\n"
