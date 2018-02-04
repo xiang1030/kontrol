@@ -208,35 +208,37 @@ class Camera(QMainWindow, camWindow):
 
     def start_stream(self):
         self.capture = cv2.VideoCapture(self.stream_url)
-        self.m = MainApp(self)
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_frame)
-        self.timer.start(5)
+        if self.capture.isOpened():
+            self.timer = QTimer(self)
+            self.timer.timeout.connect(self.update_frame)
+            self.timer.start(5)
+            self.signal.emit('stream', 'camera')
+        else:
+            self.imgLabel.setText('Camera is not available!')
+            self.signal.emit('sleep', 'camera')
 
     def update_frame(self):
-        try:
-            ret, self.image = self.capture.read()
-            if self.screen_w <= 1280:
-                screen_w = self.screen_w
-            else:
-                screen_w = 1280
-            r = screen_w / self.image.shape[1]
-            screen_h = int(self.image.shape[0] * r)
-            if screen_h <= self.screen_h:
-                self.dim = (screen_w, screen_h)
-            else:
-                self.dim = (screen_w, 720)
-            self.resized = cv2.resize(
-                self.image, self.dim, interpolation=cv2.INTER_AREA)
-            self.displayImage(self.resized, 1)
-            self.setMinimumSize(self.dim[0], self.dim[1])
-        except Exception:
-            self.imgLabel.setText('Camera is not available!')
-            self.stop_camera()
+        ret, self.image = self.capture.read()
+        if self.screen_w <= 1280:
+            screen_w = self.screen_w
+        else:
+            screen_w = 1280
+        r = screen_w / self.image.shape[1]
+        screen_h = int(self.image.shape[0] * r)
+        if screen_h <= self.screen_h:
+            self.dim = (screen_w, screen_h)
+        else:
+            self.dim = (screen_w, 720)
+
+        self.resized = cv2.resize(
+            self.image, self.dim, interpolation=cv2.INTER_AREA)
+        self.displayImage(self.resized, 1)
+        self.setMinimumSize(self.dim[0], self.dim[1])
 
     def displayImage(self, img, window=1):
         qformat = QImage.Format_Indexed8
         if len(img.shape) == 3:
+
             if img.shape[2] == 4:
                 qformat = QImage.Format_RGBA8888
             else:
@@ -250,21 +252,21 @@ class Camera(QMainWindow, camWindow):
     def start_record(self):
         self.capture = cv2.VideoCapture(self.stream_url)
         self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        self.out = cv2.VideoWriter(
-            '{}.avi'.format(date.strftime(
-                datetime.now(), '%Y%m%d_%H%M%S')),
-            self.fourcc, 10.0, (1280, 720))
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.save_record)
-        self.timer.start(5)
+        if self.capture.isOpened():
+            self.out = cv2.VideoWriter(
+                '{}.avi'.format(date.strftime(
+                    datetime.now(), '%Y%m%d_%H%M%S')),
+                self.fourcc, 10.0, (1280, 720))
+            self.timer = QTimer(self)
+            self.timer.timeout.connect(self.save_record)
+            self.timer.start(5)
+            self.signal.emit('record', 'camera')
+        else:
+            self.signal.emit('sleep', 'camera')
 
     def save_record(self):
-        try:
-            ret, image = self.capture.read()
-            self.out.write(image)
-        except Exception:
-            self.show()
-            self.imgLabel.setText('Camera is not available!')
+        ret, image = self.capture.read()
+        self.out.write(image)
 
     def stop_camera(self):
         try:
@@ -295,6 +297,7 @@ class MainApp(QMainWindow, mainWindow):
     def keyPressEvent(self, event):
         modifiers = QApplication.keyboardModifiers()
         if modifiers == Qt.AltModifier:
+
             if event.key() == Qt.Key_1:
                 self.tabWidget.setCurrentIndex(0)
             elif event.key() == Qt.Key_2:
@@ -390,25 +393,17 @@ class MainApp(QMainWindow, mainWindow):
     def button_stream(self):
         self.dialog.start_stream()
         self.dialog.show()
-        self.out_camera_label.setText(
-            '<p style="color:#2E7D32">Streaming</p>')
 
     def button_record(self):
         self.dialog.start_record()
-        self.out_camera_label.setText(
-            '<p style="color:#2E7D32">Recording</p>')
 
     def button_stream_record(self):
         self.button_stream()
         self.button_record()
-        self.out_camera_label.setText(
-            '<p style="color:#2E7D32">Recording</p>')
 
     def button_stop_camera(self):
         self.dialog.stop_camera()
         self.dialog.close()
-        self.out_camera_label.setText(
-            '<p style="color:#C62828">Sleeping</p>')
 
     # indoor
     def button_in_light_on(self):
@@ -573,6 +568,7 @@ class MainApp(QMainWindow, mainWindow):
 
     def conf_labels(self, msg, topic):
         if topic == 'indoor_light_cb':
+
             if msg == 'ON':
                 self.in_light_label.setText('<p style="color:#2E7D32">ON</p>')
                 self.in_light_level_label.setText(
@@ -590,6 +586,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#2E7D32">{}%</p>'.format(msg))
 
         elif topic == 'indoor_fan_cb':
+
             if msg == 'ON':
                 self.in_fan_label.setText('<p style="color:#2E7D32">ON</p>')
                 self.in_fan_level_label.setText(
@@ -606,6 +603,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#2E7D32">{}%</p>'.format(msg))
 
         elif topic == 'indoor_air_cb':
+
             if msg == 'ON':
                 self.in_air_label.setText('<p style="color:#2E7D32">ON</p>')
                 self.in_air_level_label.setText(
@@ -622,6 +620,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#2E7D32">{}%</p>'.format(msg))
 
         elif topic == 'indoor_curtain_cb':
+
             if msg == 'ON':
                 self.in_curtain_label.setText(
                     '<p style="color:#2E7D32">ON</p>')
@@ -633,6 +632,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#1565C0">AUTO</p>')
 
         elif topic == 'indoor_door_cb':
+
             if msg == 'ON':
                 self.in_door_label.setText('<p style="color:#2E7D32">OPEN</p>')
             elif msg == 'OFF':
@@ -640,6 +640,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#C62828">CLOSED</p>')
 
         elif topic == 'indoor_temp_cb':
+
             if int(msg) > 22 and int(msg) < 28:
                 self.in_temp_label.setText(
                     '<p style="color:#2E7D32">{}°</p>'.format(msg))
@@ -651,6 +652,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#C62828">{}°</p>'.format(msg))
 
         elif topic == 'indoor_alarm_cb':
+
             if msg == 'ON':
                 self.in_alarm_label.setText(
                     '<p style="color:#2E7D32">Active</p>')
@@ -659,6 +661,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#C62828">Inactive</p>')
 
         elif topic == 'outdoor_light_cb':
+
             if msg == 'ON':
                 self.out_light_label.setText('<p style="color:#2E7D32">ON</p>')
                 self.out_light_level_label.setText(
@@ -677,6 +680,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#2E7D32">{}%</p>'.format(msg))
 
         elif topic == 'irrigation_cb':
+
             if msg == 'ON':
                 self.out_irri_label.setText('<p style="color:#2E7D32">ON</p>')
                 self.out_irri_level_label.setText(
@@ -694,6 +698,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#2E7D32">{}%</p>'.format(msg))
 
         elif topic == 'outdoor_temp_cb':
+
             if int(msg) >= 23 and int(msg) <= 27:
                 self.out_temp_label.setText(
                     '<p style="color:#2E7D32">{}°</p>'.format(msg))
@@ -705,6 +710,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#C62828">{}°</p>'.format(msg))
 
         elif topic == 'outdoor_hum_cb':
+
             if int(msg) >= 45 and int(msg) <= 55:
                 self.out_hum_label.setText(
                     '<p style="color:#2E7D32">{}</p>'.format(msg))
@@ -713,6 +719,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#C62828">{}</p>'.format(msg))
 
         elif topic == 'outdoor_alarm_cb':
+
             if msg == 'ON':
                 self.out_alarm_label.setText(
                     '<p style="color:#2E7D32">Active</p>')
@@ -723,8 +730,19 @@ class MainApp(QMainWindow, mainWindow):
         elif topic == 'alarm_cb':
             self.alarm(msg)
 
-        elif msg == 'stop':
-            self.button_stop_camera()
+        elif topic == 'camera':
+
+            if msg == 'stream':
+                self.out_camera_label.setText(
+                    '<p style="color:#2E7D32">Streaming</p>')
+            elif msg == 'record':
+                self.out_camera_label.setText(
+                    '<p style="color:#2E7D32">Recording</p>')
+            elif msg == 'sleep':
+                self.out_camera_label.setText(
+                    '<p style="color:#C62828">Sleeping</p>')
+            elif msg == 'stop':
+                self.button_stop_camera()
 
     def db(self):
         row = 0
