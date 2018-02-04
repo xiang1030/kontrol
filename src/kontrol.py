@@ -756,27 +756,30 @@ class MainApp(QMainWindow, mainWindow):
         col_s4 = 7
         col_s5 = 8
 
-        cnx = mysql.connector.connect(
-            user='amr', password='nowayout',
-            host='192.168.1.11', database='assc')
-        cursor = cnx.cursor()
-        get_code = ("""SELECT aname, uid, code, year, s1, s2, s3,
-                    s4, s5 FROM students""")
-        cursor.execute(get_code)
-        for (aname, uid, code, year, s1, s2, s3, s4, s5) in cursor:
-            self.table.setItem(row, col_code, QTableWidgetItem(str(code)))
-            self.table.setItem(row, col_year, QTableWidgetItem(str(year)))
-            self.table.setItem(row, col_uid, QTableWidgetItem(str(uid)))
-            self.table.setItem(row, col_aname, QTableWidgetItem(str(aname)))
-            self.table.setItem(row, col_s1, QTableWidgetItem(str(s1)))
-            self.table.setItem(row, col_s2, QTableWidgetItem(str(s2)))
-            self.table.setItem(row, col_s3, QTableWidgetItem(str(s3)))
-            self.table.setItem(row, col_s4, QTableWidgetItem(str(s4)))
-            self.table.setItem(row, col_s5, QTableWidgetItem(str(s5)))
-            row = row + 1
-        cnx.commit()
-        cursor.close()
-        cnx.close()
+        try:
+            cnx = mysql.connector.connect(
+                user='amr', password='nowayout',
+                host='192.168.1.11', database='assc')
+            cursor = cnx.cursor()
+            get_code = ("""SELECT aname, uid, code, year, s1, s2, s3,
+                        s4, s5 FROM students""")
+            cursor.execute(get_code)
+            for (aname, uid, code, year, s1, s2, s3, s4, s5) in cursor:
+                self.table.setItem(row, col_code, QTableWidgetItem(str(code)))
+                self.table.setItem(row, col_year, QTableWidgetItem(str(year)))
+                self.table.setItem(row, col_uid, QTableWidgetItem(str(uid)))
+                self.table.setItem(row, col_aname, QTableWidgetItem(str(aname)))
+                self.table.setItem(row, col_s1, QTableWidgetItem(str(s1)))
+                self.table.setItem(row, col_s2, QTableWidgetItem(str(s2)))
+                self.table.setItem(row, col_s3, QTableWidgetItem(str(s3)))
+                self.table.setItem(row, col_s4, QTableWidgetItem(str(s4)))
+                self.table.setItem(row, col_s5, QTableWidgetItem(str(s5)))
+                row = row + 1
+            cnx.commit()
+            cursor.close()
+            cnx.close()
+        except Exception:
+            pass
 
 
 def main():
