@@ -183,7 +183,7 @@ class get_message(QThread):
                     msg = msg.strip()
                     self.signal.emit(msg, topic)
             open(messages_path, 'w')
-            self.msleep(250)
+            self.msleep(50)
 
 
 class Camera(QMainWindow, camWindow):
@@ -238,7 +238,6 @@ class Camera(QMainWindow, camWindow):
     def displayImage(self, img, window=1):
         qformat = QImage.Format_Indexed8
         if len(img.shape) == 3:
-
             if img.shape[2] == 4:
                 qformat = QImage.Format_RGBA8888
             else:
@@ -297,7 +296,6 @@ class MainApp(QMainWindow, mainWindow):
     def keyPressEvent(self, event):
         modifiers = QApplication.keyboardModifiers()
         if modifiers == Qt.AltModifier:
-
             if event.key() == Qt.Key_1:
                 self.tabWidget.setCurrentIndex(0)
             elif event.key() == Qt.Key_2:
@@ -323,7 +321,7 @@ class MainApp(QMainWindow, mainWindow):
 
     def random_id(self):
         s = string.ascii_letters + string.digits
-        self.client_id = ''.join(random.sample(s, 10))
+        self.client_id = ''.join(random.sample(s, 7))
 
     def connect(self):
         self.mqttc = mqtt.Client(self.client_id)
@@ -746,7 +744,7 @@ class MainApp(QMainWindow, mainWindow):
 
     def db(self):
         row = 0
-        col_aname = 0
+        col_name = 0
         col_code = 1
         col_year = 2
         col_uid = 3
@@ -768,7 +766,7 @@ class MainApp(QMainWindow, mainWindow):
                 self.table.setItem(row, col_code, QTableWidgetItem(str(code)))
                 self.table.setItem(row, col_year, QTableWidgetItem(str(year)))
                 self.table.setItem(row, col_uid, QTableWidgetItem(str(uid)))
-                self.table.setItem(row, col_aname, QTableWidgetItem(str(aname)))
+                self.table.setItem(row, col_name, QTableWidgetItem(str(aname)))
                 self.table.setItem(row, col_s1, QTableWidgetItem(str(s1)))
                 self.table.setItem(row, col_s2, QTableWidgetItem(str(s2)))
                 self.table.setItem(row, col_s3, QTableWidgetItem(str(s3)))
