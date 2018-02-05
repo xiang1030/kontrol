@@ -204,6 +204,7 @@ class Camera(QMainWindow, camWindow):
     def closeEvent(self, event):
         self.stop_camera()
         self.signal.emit('stop', 'camera')
+        self.signal.emit('sleep', 'camera')
         event.accept()
 
     def start_stream(self):
@@ -273,6 +274,8 @@ class Camera(QMainWindow, camWindow):
             self.timer.stop()
         except Exception:
             pass
+        finally:
+            self.signal.emit('sleep', 'camera')
 
 
 class MainApp(QMainWindow, mainWindow):
