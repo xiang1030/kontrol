@@ -331,9 +331,7 @@ class MainApp(QMainWindow, mainWindow):
         try:
             self.mqttc.connect('ndeti.mooo.com')
         except Exception:
-            QMessageBox.information(
-                self, 'Information',
-                'Can\'t connect to MQTT Broker', QMessageBox.Ok)
+            print('[MQTT]: Connection failed')
         self.mqttc.on_message = on_message
         self.mqttc.loop_start()
         self.mqttc.subscribe([
