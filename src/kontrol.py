@@ -196,7 +196,7 @@ class Camera(QMainWindow, camWindow):
         self.setupUi(self)
         self.setMaximumSize(1280, 720)
         self.image = None
-        self.stream_url = 'rtsp://192.168.1.13:554/ucast/11'
+        self.stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
         rect = QDesktopWidget().availableGeometry()
         self.screen_h = rect.height()
         self.screen_w = rect.width()
@@ -326,7 +326,7 @@ class MainApp(QMainWindow, mainWindow):
     def connect(self):
         self.mqttc = mqtt.Client(self.client_id)
         try:
-            self.mqttc.connect('localhost')
+            self.mqttc.connect('ndeti.mooo.com')
         except Exception:
             QMessageBox.information(
                 self, 'Information',
@@ -757,7 +757,7 @@ class MainApp(QMainWindow, mainWindow):
         try:
             cnx = mysql.connector.connect(
                 user='amr', password='nowayout',
-                host='192.168.1.11', database='assc')
+                host='ndeti.mooo.com', database='assc')
             cursor = cnx.cursor()
             get_code = ("""SELECT aname, uid, code, year, s1, s2, s3,
                         s4, s5 FROM students""")
