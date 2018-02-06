@@ -7,6 +7,7 @@ from PyQt5.QtMultimedia import QSound
 from main import Ui_MainWindow as mainWindow
 from cam import Ui_MainWindow as camWindow
 from datetime import datetime, date
+from threading import Thread
 import paho.mqtt.client as mqtt
 import cv2
 import mysql.connector
@@ -15,6 +16,7 @@ import sys
 import getpass
 import random
 import string
+import time
 
 
 user = getpass.getuser()
@@ -286,12 +288,17 @@ class MainApp(QMainWindow, mainWindow):
         self.setupUi(self)
         self.file_dir()
         self.random_id()
-        self.connect()
         self.conf_ui()
         self.conf_buttons()
         self.conf_sliders()
+        # connect to mqtt broker
+        self.t = Thread(target=self.connect)
+        self.t.start()
+        self.quit = False
+        # connect camera signal to labels
         self.dialog = Camera()
         self.dialog.signal.connect(self.conf_labels)
+        # connect message signal to labels
         self.thread = get_message()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
@@ -315,6 +322,7 @@ class MainApp(QMainWindow, mainWindow):
             os.system('taskkill /f /im kontrol.exe')
         elif sys.platform == 'linux':
             os.system('pkill kontrol')
+        self.quit = True
         event.accept()
 
     def file_dir(self):
@@ -328,19 +336,26 @@ class MainApp(QMainWindow, mainWindow):
 
     def connect(self):
         self.mqttc = mqtt.Client(self.client_id)
-        try:
-            self.mqttc.connect('ndeti.mooo.com')
-        except Exception:
-            print('[MQTT]: Connection failed')
-        self.mqttc.on_message = on_message
-        self.mqttc.loop_start()
-        self.mqttc.subscribe([
-            ('indoor_light_cb', 1), ('indoor_fan_cb', 1), ('indoor_air_cb', 1),
-            ('indoor_curtain_cb', 1), ('indoor_door_cb', 1),
-            ('indoor_temp_cb', 1), ('outdoor_light_cb', 1),
-            ('irrigation_cb', 1), ('alarm_cb', 1),
-            ('outdoor_temp_cb', 1), ('outdoor_hum_cb', 1),
-            ('indoor_alarm_cb', 1), ('outdoor_alarm_cb', 1)])
+        while not self.quit:
+            try:
+                self.mqttc.connect('localhost')
+            except Exception:
+                print('[MQTT]: Connection failed')
+                print('[MQTT]: Reconnecting ...')
+                time.sleep(5)
+                self.connect()
+            else:
+                self.mqttc.on_message = on_message
+                self.mqttc.loop_start()
+                self.mqttc.subscribe([
+                    ('indoor_light_cb', 1), ('indoor_fan_cb', 1),
+                    ('indoor_air_cb', 1), ('indoor_curtain_cb', 1),
+                    ('indoor_door_cb', 1), ('indoor_alarm_cb', 1),
+                    ('indoor_temp_cb', 1), ('outdoor_light_cb', 1),
+                    ('irrigation_cb', 1), ('alarm_cb', 1),
+                    ('outdoor_temp_cb', 1), ('outdoor_hum_cb', 1),
+                    ('outdoor_alarm_cb', 1)])
+                break
 
     def conf_ui(self):
         self.setFixedSize(911, 547)
