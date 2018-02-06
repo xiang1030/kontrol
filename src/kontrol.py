@@ -343,7 +343,6 @@ class MainApp(QMainWindow, mainWindow):
                 print('[MQTT]: Connection failed')
                 print('[MQTT]: Reconnecting ...')
                 time.sleep(5)
-                self.connect()
             else:
                 self.mqttc.on_message = on_message
                 self.mqttc.loop_start()
