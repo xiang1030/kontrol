@@ -49,12 +49,12 @@ def on_message(client, userdata, message):
         op.close()
 
 
-class get_message(QThread):
+class GetMessage(QThread):
 
     signal = pyqtSignal(str, str)
 
     def __init__(self, parent=None):
-        super(get_message, self).__init__(parent)
+        super(GetMessage, self).__init__(parent)
 
     def run(self):
         while True:
@@ -299,7 +299,7 @@ class MainApp(QMainWindow, mainWindow):
         self.dialog = Camera()
         self.dialog.signal.connect(self.conf_labels)
         # connect message signal to labels
-        self.thread = get_message()
+        self.thread = GetMessage()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
 
