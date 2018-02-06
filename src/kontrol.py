@@ -320,6 +320,7 @@ class MainApp(QMainWindow, mainWindow):
     def closeEvent(self, event):
         if sys.platform == 'win32':
             os.system('taskkill /f /im kontrol.exe')
+            os.system('taskkill /f /im Python.exe')
         elif sys.platform == 'linux':
             os.system('pkill kontrol')
         self.quit = True
@@ -391,10 +392,12 @@ class MainApp(QMainWindow, mainWindow):
         self.out_close_button.clicked.connect(self.button_out_close)
         self.out_alarm_button.clicked.connect(self.button_out_alarm)
 
-        # message
+        # Message
         self.message_send_button.clicked.connect(self.button_message_send)
         self.message_clear_button.clicked.connect(self.button_message_clear)
-        self.refresh_button.clicked.connect(self.db)
+
+        # Database
+        self.refresh_button.clicked.connect(self.button_refresh)
 
         # Camera
         self.stream_button.clicked.connect(self.button_stream)
@@ -417,6 +420,11 @@ class MainApp(QMainWindow, mainWindow):
     def button_stop_camera(self):
         self.dialog.stop_camera()
         self.dialog.close()
+
+    # Database
+    def button_refresh(self):
+        t = Thread(target=self.db)
+        t.start()
 
     # indoor
     def button_in_light_on(self):
@@ -773,6 +781,9 @@ class MainApp(QMainWindow, mainWindow):
             cnx = mysql.connector.connect(
                 user='amr', password='nowayout',
                 host='ndeti.mooo.com', database='assc')
+        except Exception:
+            pass
+        else:
             cursor = cnx.cursor()
             get_code = ("""SELECT aname, uid, code, year, s1, s2, s3,
                         s4, s5 FROM students""")
@@ -791,8 +802,6 @@ class MainApp(QMainWindow, mainWindow):
             cnx.commit()
             cursor.close()
             cnx.close()
-        except Exception:
-            pass
 
 
 def main():
