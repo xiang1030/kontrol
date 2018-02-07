@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem, QDesktopWidget
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QTextDocument, QImage, QPixmap
 from PyQt5.QtMultimedia import QSound
 from main import Ui_MainWindow as mainWindow
@@ -188,96 +188,113 @@ class GetMessage(QThread):
             self.msleep(50)
 
 
-class Camera(QMainWindow, camWindow):
+class Record(QThread):
 
     signal = pyqtSignal(str, str)
+
+    def __init__(self, parent=None):
+        super(Record, self).__init__(parent)
+        self.isRunning = True
+        self.out = None
+
+    def run(self):
+        self.isRunning = True
+        stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
+        capture = cv2.VideoCapture(stream_url)
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        if capture.isOpened():
+            self.out = cv2.VideoWriter(
+                '{}.avi'.format(date.strftime(
+                    datetime.now(), '%Y%m%d_%H%M%S')),
+                fourcc, 10.0, (1280, 720))
+        while self.isRunning:
+            if capture.isOpened():
+                ret, image = capture.read()
+                self.out.write(image)
+                self.signal.emit('record', 'camera')
+                time.sleep(0.01)
+            else:
+                self.signal.emit('sleep', 'camera')
+        self.signal.emit('sleep', 'camera')
+
+    def stop(self):
+        self.isRunning = False
+        try:
+            self.out.release()
+        except Exception:
+            pass
+        self.quit()
+        self.wait()
+
+
+class Stream(QThread):
+
+    signal = pyqtSignal(str, str)
+    changeDim = pyqtSignal(int, int)
+    changePixmap = pyqtSignal(QPixmap)
+
+    def __init__(self, parent=None):
+        super(Stream, self).__init__(parent)
+        self.isRunning = True
+
+    def run(self):
+        self.isRunning = True
+        stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
+        capture = cv2.VideoCapture(stream_url)
+        geo = QDesktopWidget().availableGeometry()
+        while self.isRunning:
+            if capture.isOpened():
+                ret, image = capture.read()
+                if geo.width() <= 1280:
+                    screen_w = geo.width()
+                else:
+                    screen_w = 1280
+                r = screen_w / image.shape[1]
+                screen_h = int(image.shape[0] * r)
+                if screen_h <= geo.height():
+                    dim = (screen_w, screen_h)
+                else:
+                    dim = (screen_w, 720)
+                self.changeDim.emit(dim[0], dim[1])
+                resized = cv2.resize(
+                    image, dim, interpolation=cv2.INTER_AREA)
+                qformat = QImage.Format_Indexed8
+                if len(resized.shape) == 3:
+                    if resized.shape[2] == 4:
+                        qformat = QImage.Format_RGBA8888
+                    else:
+                        qformat = QImage.Format_RGB888
+                outImage = QImage(
+                    resized, resized.shape[1],
+                    resized.shape[0], resized.strides[0], qformat)
+                outImage = outImage.rgbSwapped()
+                outPixmap = QPixmap.fromImage(outImage)
+                self.changePixmap.emit(outPixmap)
+                self.signal.emit('record', 'camera')
+                time.sleep(0.01)
+            else:
+                self.signal.emit('sleep', 'camera')
+        self.signal.emit('sleep', 'camera')
+
+    def stop(self):
+        self.isRunning = False
+        self.quit()
+        self.wait()
+
+
+class Camera(QMainWindow, camWindow):
 
     def __init__(self, parent=None):
         super(Camera, self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.setMaximumSize(1280, 720)
-        self.image = None
-        self.stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
-        rect = QDesktopWidget().availableGeometry()
-        self.screen_h = rect.height()
-        self.screen_w = rect.width()
 
-    def closeEvent(self, event):
-        self.stop_camera()
-        self.signal.emit('stop', 'camera')
-        self.signal.emit('sleep', 'camera')
-        event.accept()
+    def size(self, x, y):
+        self.setMinimumSize(x, y)
 
-    def start_stream(self):
-        self.capture = cv2.VideoCapture(self.stream_url)
-        if self.capture.isOpened():
-            self.timer = QTimer(self)
-            self.timer.timeout.connect(self.update_frame)
-            self.timer.start(5)
-            self.signal.emit('stream', 'camera')
-        else:
-            self.imgLabel.setText('Camera is not available!')
-            self.signal.emit('sleep', 'camera')
-
-    def update_frame(self):
-        ret, self.image = self.capture.read()
-        if self.screen_w <= 1280:
-            screen_w = self.screen_w
-        else:
-            screen_w = 1280
-        r = screen_w / self.image.shape[1]
-        screen_h = int(self.image.shape[0] * r)
-        if screen_h <= self.screen_h:
-            self.dim = (screen_w, screen_h)
-        else:
-            self.dim = (screen_w, 720)
-
-        self.resized = cv2.resize(
-            self.image, self.dim, interpolation=cv2.INTER_AREA)
-        self.displayImage(self.resized, 1)
-        self.setMinimumSize(self.dim[0], self.dim[1])
-
-    def displayImage(self, img, window=1):
-        qformat = QImage.Format_Indexed8
-        if len(img.shape) == 3:
-            if img.shape[2] == 4:
-                qformat = QImage.Format_RGBA8888
-            else:
-                qformat = QImage.Format_RGB888
-        outImage = QImage(
-            img, img.shape[1], img.shape[0], img.strides[0], qformat)
-        outImage = outImage.rgbSwapped()
-        if window == 1:
-            self.imgLabel.setPixmap(QPixmap.fromImage(outImage))
-
-    def start_record(self):
-        self.capture = cv2.VideoCapture(self.stream_url)
-        self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        if self.capture.isOpened():
-            self.out = cv2.VideoWriter(
-                '{}.avi'.format(date.strftime(
-                    datetime.now(), '%Y%m%d_%H%M%S')),
-                self.fourcc, 10.0, (1280, 720))
-            self.timer = QTimer(self)
-            self.timer.timeout.connect(self.save_record)
-            self.timer.start(5)
-            self.signal.emit('record', 'camera')
-        else:
-            self.signal.emit('sleep', 'camera')
-
-    def save_record(self):
-        ret, image = self.capture.read()
-        self.out.write(image)
-
-    def stop_camera(self):
-        try:
-            self.out.release()
-            self.timer.stop()
-        except Exception:
-            pass
-        finally:
-            self.signal.emit('sleep', 'camera')
+    def viewImage(self, outPixmap):
+        self.imgLabel.setPixmap(outPixmap)
 
 
 class MainApp(QMainWindow, mainWindow):
@@ -295,10 +312,17 @@ class MainApp(QMainWindow, mainWindow):
         self.t = Thread(target=self.connect)
         self.t.start()
         self.quit = False
-        # connect camera signal to labels
-        self.dialog = Camera()
-        self.dialog.signal.connect(self.conf_labels)
-        # connect message signal to labels
+        # initialize Camera
+        self.cam = Camera()
+        # initialize Stream Thread
+        self.st = Stream()
+        self.st.signal.connect(self.conf_labels)
+        self.st.changePixmap.connect(self.cam.viewImage)
+        self.st.changeDim.connect(self.cam.size)
+        # initialize Record Thread
+        self.rc = Record()
+        self.rc.signal.connect(self.conf_labels)
+        # start Message Thread
         self.thread = GetMessage()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
@@ -407,19 +431,20 @@ class MainApp(QMainWindow, mainWindow):
 
     # Camera
     def button_stream(self):
-        self.dialog.start_stream()
-        self.dialog.show()
+        self.st.start()
+        self.cam.show()
 
     def button_record(self):
-        self.dialog.start_record()
+        self.rc.start()
 
     def button_stream_record(self):
         self.button_stream()
         self.button_record()
 
     def button_stop_camera(self):
-        self.dialog.stop_camera()
-        self.dialog.close()
+        self.st.stop()
+        self.rc.stop()
+        self.cam.close()
 
     # Database
     def button_refresh(self):
