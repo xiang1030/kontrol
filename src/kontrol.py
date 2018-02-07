@@ -320,8 +320,8 @@ class MainApp(QMainWindow, mainWindow):
         self.st.changePixmap.connect(self.cam.viewImage)
         self.st.changeDim.connect(self.cam.size)
         # initialize Record Thread
-        self.rc = Record()
-        self.rc.signal.connect(self.conf_labels)
+        self.rec = Record()
+        self.rec.signal.connect(self.conf_labels)
         # start Message Thread
         self.thread = GetMessage()
         self.thread.start()
@@ -435,7 +435,7 @@ class MainApp(QMainWindow, mainWindow):
         self.cam.show()
 
     def button_record(self):
-        self.rc.start()
+        self.rec.start()
 
     def button_stream_record(self):
         self.button_stream()
@@ -443,7 +443,7 @@ class MainApp(QMainWindow, mainWindow):
 
     def button_stop_camera(self):
         self.st.stop()
-        self.rc.stop()
+        self.rec.stop()
         self.cam.close()
 
     # Database
