@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
-from PyQt5.QtWidgets import QTableWidgetItem, QDesktopWidget
+from PyQt5.QtWidgets import QTableWidgetItem, QDesktopWidget, QLabel
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QTextDocument, QImage, QPixmap
 from PyQt5.QtMultimedia import QSound
 from main import Ui_MainWindow as mainWindow
-from cam import Ui_MainWindow as camWindow
 from datetime import datetime, date
 from threading import Thread
 import paho.mqtt.client as mqtt
@@ -210,15 +209,14 @@ class Record(QThread):
             date.strftime(datetime.now(), '%Y%m%d_%H%M%S'))
         if capture.isOpened():
             self.out = cv2.VideoWriter(video_name, fourcc, 10.0, (1280, 720))
-        while self.isRunning:
-            if capture.isOpened():
+            while self.isRunning:
                 ret, image = capture.read()
                 self.out.write(image)
                 self.signal.emit('record', 'camera')
                 time.sleep(0.01)
-            else:
-                self.signal.emit('nocam', 'camera')
-        self.signal.emit('sleep', 'camera')
+            self.signal.emit('sleep', 'camera')
+        else:
+            self.signal.emit('nocam', 'camera')
         if sys.platform == 'win32':
             os.system(r"move {}\{} {}{}".format(
                 cwd, video_name, videos_dir, video_name))
@@ -239,7 +237,6 @@ class Record(QThread):
 class Stream(QThread):
 
     signal = pyqtSignal(str, str)
-    changeDim = pyqtSignal(int, int)
     changePixmap = pyqtSignal(QPixmap)
 
     def __init__(self, parent=None):
@@ -251,8 +248,9 @@ class Stream(QThread):
         stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
         capture = cv2.VideoCapture(stream_url)
         geo = QDesktopWidget().availableGeometry()
-        while self.isRunning:
-            if capture.isOpened():
+        if capture.isOpened():
+            self.signal.emit('stream', 'camera')
+            while self.isRunning:
                 ret, image = capture.read()
                 if geo.width() <= 1280:
                     screen_w = geo.width()
@@ -264,7 +262,6 @@ class Stream(QThread):
                     dim = (screen_w, screen_h)
                 else:
                     dim = (screen_w, 720)
-                self.changeDim.emit(dim[0], dim[1])
                 resized = cv2.resize(
                     image, dim, interpolation=cv2.INTER_AREA)
                 qformat = QImage.Format_Indexed8
@@ -279,11 +276,10 @@ class Stream(QThread):
                 outImage = outImage.rgbSwapped()
                 outPixmap = QPixmap.fromImage(outImage)
                 self.changePixmap.emit(outPixmap)
-                self.signal.emit('stream', 'camera')
                 time.sleep(0.01)
-            else:
-                self.signal.emit('nocam', 'camera')
-        self.signal.emit('sleep', 'camera')
+            self.signal.emit('sleep', 'camera')
+        else:
+            self.signal.emit('nocam', 'camera')
 
     def stop(self):
         self.isRunning = False
@@ -291,25 +287,21 @@ class Stream(QThread):
         self.wait()
 
 
-class Camera(QMainWindow, camWindow):
+class Camera(QLabel):
 
     signal = pyqtSignal(str, str)
 
     def __init__(self, parent=None):
         super(Camera, self).__init__(parent)
-        QMainWindow.__init__(self)
-        self.setupUi(self)
-        self.setMaximumSize(1280, 720)
+        QLabel.__init__(self)
+        self.setFixedSize(1280, 720)
 
     def closeEvent(self, event):
         self.signal.emit('close', 'camera')
         event.accept()
 
-    def size(self, x, y):
-        self.setMinimumSize(x, y)
-
     def viewImage(self, outPixmap):
-        self.imgLabel.setPixmap(outPixmap)
+        self.setPixmap(outPixmap)
 
 
 class MainApp(QMainWindow, mainWindow):
@@ -334,7 +326,6 @@ class MainApp(QMainWindow, mainWindow):
         self.st = Stream()
         self.st.signal.connect(self.conf_labels)
         self.st.changePixmap.connect(self.cam.viewImage)
-        self.st.changeDim.connect(self.cam.size)
         # initialize Record Thread
         self.rec = Record()
         self.rec.signal.connect(self.conf_labels)
@@ -808,6 +799,7 @@ class MainApp(QMainWindow, mainWindow):
                     '<p style="color:#C62828">Not Available</p>')
             elif msg == 'close':
                 self.st.stop()
+                self.cam.close()
 
     def db(self):
         row = 0
