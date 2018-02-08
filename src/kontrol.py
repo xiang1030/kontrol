@@ -23,14 +23,14 @@ user = getpass.getuser()
 if sys.platform == 'win32':
     messages_dir = 'C:/Users/{}/AppData/Local/kontrol/'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
-    videos_dir = 'C:/Users/{}/Videos/'.format(user)
+    videos_dir = 'C:/Users/{}/Videos/Surveillance'.format(user)
 elif sys.platform == 'linux':
     messages_dir = os.path.relpath(
         '/home/{}/.local/share/kontrol/'.format(user))
     messages_path = os.path.relpath(
         '/home/{}/.local/share/kontrol/messages'.format(user))
     videos_dir = os.path.relpath(
-        '/home/{}/Videos/'.format(user))
+        '/home/{}/Videos/Surveillance'.format(user))
 
 if getattr(sys, 'frozen', False):
     # frozen
@@ -206,7 +206,7 @@ class Record(QThread):
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         cwd = os.getcwd()
         video_name = '{}.avi'.format(
-            date.strftime(datetime.now(), '%Y%m%d_%H%M%S'))
+            date.strftime(datetime.now(), '%Y-%m-%d'))
         if capture.isOpened():
             self.out = cv2.VideoWriter(video_name, fourcc, 10.0, (1280, 720))
             while self.isRunning:
@@ -310,7 +310,7 @@ class MainApp(QMainWindow, mainWindow):
         super(MainApp, self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.file_dir()
+        self.make_dirs()
         self.random_id()
         self.conf_ui()
         self.conf_buttons()
@@ -357,9 +357,11 @@ class MainApp(QMainWindow, mainWindow):
         self.quit = True
         event.accept()
 
-    def file_dir(self):
+    def make_dirs(self):
         if not os.path.exists(messages_dir):
             os.makedirs(messages_dir)
+        if not os.path.exists(videos_dir):
+            os.makedirs(videos_dir)
         open(messages_path, 'w')
 
     def random_id(self):
