@@ -206,10 +206,13 @@ class Record(QThread):
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         cwd = os.getcwd()
         video_name = '{}.avi'.format(
-            date.strftime(datetime.now(), '%Y-%m-%d'))
+            date.strftime(datetime.now(), '%Y%m%d_%H%M%S'))
         if capture.isOpened():
             self.out = cv2.VideoWriter(video_name, fourcc, 10.0, (1280, 720))
             while self.isRunning:
+                if date.strftime(datetime.now(), '%H%M%S') == '235959':
+                    self.signal.emit('restart', 'camera')
+                    break
                 ret, image = capture.read()
                 self.out.write(image)
                 self.signal.emit('record', 'camera')
@@ -802,6 +805,9 @@ class MainApp(QMainWindow, mainWindow):
             elif msg == 'close':
                 self.st.stop()
                 self.cam.close()
+            elif msg == 'restart':
+                self.rec.stop()
+                self.rec.start()
 
     def db(self):
         row = 0
