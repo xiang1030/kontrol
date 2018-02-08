@@ -220,7 +220,7 @@ class Record(QThread):
                 self.signal.emit('sleep', 'camera')
         self.signal.emit('sleep', 'camera')
         if sys.platform == 'win32':
-            os.system("move {}/{} {}/{}".format(
+            os.system(r"move {}\{} {}{}".format(
                 cwd, video_name, videos_dir, video_name))
         elif sys.platform == 'linux':
             os.system("mv {}/{} {}/{}".format(
