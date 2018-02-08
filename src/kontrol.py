@@ -217,7 +217,7 @@ class Record(QThread):
                 self.signal.emit('record', 'camera')
                 time.sleep(0.01)
             else:
-                self.signal.emit('sleep', 'camera')
+                self.signal.emit('nocam', 'camera')
         self.signal.emit('sleep', 'camera')
         if sys.platform == 'win32':
             os.system(r"move {}\{} {}{}".format(
@@ -241,7 +241,6 @@ class Stream(QThread):
     signal = pyqtSignal(str, str)
     changeDim = pyqtSignal(int, int)
     changePixmap = pyqtSignal(QPixmap)
-    nocamera = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super(Stream, self).__init__(parent)
@@ -280,11 +279,10 @@ class Stream(QThread):
                 outImage = outImage.rgbSwapped()
                 outPixmap = QPixmap.fromImage(outImage)
                 self.changePixmap.emit(outPixmap)
-                self.signal.emit('record', 'camera')
+                self.signal.emit('stream', 'camera')
                 time.sleep(0.01)
             else:
-                self.nocamera.emit('nocamera')
-                self.signal.emit('sleep', 'camera')
+                self.signal.emit('nocam', 'camera')
         self.signal.emit('sleep', 'camera')
 
     def stop(self):
@@ -306,9 +304,6 @@ class Camera(QMainWindow, camWindow):
     def closeEvent(self, event):
         self.signal.emit('close', 'camera')
         event.accept()
-
-    def nocamera(self, arg):
-        self.imgLabel.setText('Camera is not available!')
 
     def size(self, x, y):
         self.setMinimumSize(x, y)
@@ -340,7 +335,6 @@ class MainApp(QMainWindow, mainWindow):
         self.st.signal.connect(self.conf_labels)
         self.st.changePixmap.connect(self.cam.viewImage)
         self.st.changeDim.connect(self.cam.size)
-        self.st.nocamera.connect(self.cam.nocamera)
         # initialize Record Thread
         self.rec = Record()
         self.rec.signal.connect(self.conf_labels)
@@ -454,7 +448,6 @@ class MainApp(QMainWindow, mainWindow):
     # Camera
     def button_stream(self):
         self.st.start()
-        self.cam.show()
 
     def button_record(self):
         self.rec.start()
@@ -803,11 +796,16 @@ class MainApp(QMainWindow, mainWindow):
             if msg == 'record':
                 self.out_camera_label.setText(
                     '<p style="color:#2E7D32">Recording</p>')
+            elif msg == 'stream':
+                self.out_camera_label.setText(
+                    '<p style="color:#2E7D32">Recording</p>')
+                self.cam.show()
             elif msg == 'sleep':
                 self.out_camera_label.setText(
                     '<p style="color:#C62828">Sleeping</p>')
-            elif msg == 'stop':
-                self.button_stop_camera()
+            elif msg == 'nocam':
+                self.out_camera_label.setText(
+                    '<p style="color:#C62828">Not Available</p>')
             elif msg == 'close':
                 self.st.stop()
 

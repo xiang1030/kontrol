@@ -1851,7 +1851,7 @@ class Ui_MainWindow(object):
 "}")
         self.out_open_button.setObjectName("out_open_button")
         self.out_camera_label = QtWidgets.QLabel(self.outdoor_frame)
-        self.out_camera_label.setGeometry(QtCore.QRect(81, 80, 91, 18))
+        self.out_camera_label.setGeometry(QtCore.QRect(81, 81, 91, 18))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.out_camera_label.setFont(font)
