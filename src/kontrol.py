@@ -385,7 +385,7 @@ class MainApp(QMainWindow, mainWindow):
         self.mqttc = mqtt.Client(self.client_id)
         while not self.quit:
             try:
-                self.mqttc.connect('localhost')
+                self.mqttc.connect('ndeti.mooo.com')
             except Exception:
                 print('[MQTT]: Connection failed')
                 print('[MQTT]: Reconnecting ...')
