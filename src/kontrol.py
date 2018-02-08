@@ -24,11 +24,14 @@ user = getpass.getuser()
 if sys.platform == 'win32':
     messages_dir = 'C:/Users/{}/AppData/Local/kontrol/'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
+    videos_dir = 'C:/Users/{}/Videos/'.format(user)
 elif sys.platform == 'linux':
     messages_dir = os.path.relpath(
         '/home/{}/.local/share/kontrol/'.format(user))
     messages_path = os.path.relpath(
         '/home/{}/.local/share/kontrol/messages'.format(user))
+    videos_dir = os.path.relpath(
+        '/home/{}/Videos/'.format(user))
 
 if getattr(sys, 'frozen', False):
     # frozen
@@ -202,11 +205,11 @@ class Record(QThread):
         stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
         capture = cv2.VideoCapture(stream_url)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        cwd = os.getcwd()
+        video_name = '{}.avi'.format(
+            date.strftime(datetime.now(), '%Y%m%d_%H%M%S'))
         if capture.isOpened():
-            self.out = cv2.VideoWriter(
-                '{}.avi'.format(date.strftime(
-                    datetime.now(), '%Y%m%d_%H%M%S')),
-                fourcc, 10.0, (1280, 720))
+            self.out = cv2.VideoWriter(video_name, fourcc, 10.0, (1280, 720))
         while self.isRunning:
             if capture.isOpened():
                 ret, image = capture.read()
@@ -216,13 +219,19 @@ class Record(QThread):
             else:
                 self.signal.emit('sleep', 'camera')
         self.signal.emit('sleep', 'camera')
+        if sys.platform == 'win32':
+            os.system("move {}/{} {}/{}".format(
+                cwd, video_name, videos_dir, video_name))
+        elif sys.platform == 'linux':
+            os.system("mv {}/{} {}/{}".format(
+                cwd, video_name, videos_dir, video_name))
 
     def stop(self):
-        self.isRunning = False
         try:
             self.out.release()
         except Exception:
             pass
+        self.isRunning = False
         self.quit()
         self.wait()
 
