@@ -23,14 +23,14 @@ user = getpass.getuser()
 if sys.platform == 'win32':
     messages_dir = 'C:/Users/{}/AppData/Local/kontrol/'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
-    videos_dir = 'C:/Users/{}/Videos/Surveillance'.format(user)
+    videos_dir = 'C:/Users/{}/Videos/Surveillance/'.format(user)
 elif sys.platform == 'linux':
     messages_dir = os.path.relpath(
         '/home/{}/.local/share/kontrol/'.format(user))
     messages_path = os.path.relpath(
         '/home/{}/.local/share/kontrol/messages'.format(user))
     videos_dir = os.path.relpath(
-        '/home/{}/Videos/Surveillance'.format(user))
+        '/home/{}/Videos/Surveillance/'.format(user))
 
 if getattr(sys, 'frozen', False):
     # frozen
