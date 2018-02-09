@@ -206,7 +206,6 @@ class Record(QThread):
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         video_date = date.strftime(datetime.now(), '%Y%m%d_%H%M%S')
         video_name = '{}.avi'.format(video_date)
-        video_src = os.getcwd() + '\\' + video_name
         video_dist = videos_dir + '/' + video_name
         if capture.isOpened():
             self.out = cv2.VideoWriter(video_name, fourcc, 10.0, (1280, 720))
@@ -222,8 +221,10 @@ class Record(QThread):
         else:
             self.signal.emit('nocam', 'camera')
         if sys.platform == 'win32':
+            video_src = os.getcwd() + '\\' + video_name
             os.system("move {} {}".format(video_src, video_dist))
         elif sys.platform == 'linux':
+            video_src = os.getcwd() + '/' + video_name
             os.system("mv {} {}".format(video_src, video_dist))
 
     def stop(self):
