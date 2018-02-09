@@ -21,16 +21,16 @@ import time
 user = getpass.getuser()
 
 if sys.platform == 'win32':
-    messages_dir = 'C:/Users/{}/AppData/Local/kontrol/'.format(user)
+    messages_dir = 'C:/Users/{}/AppData/Local/kontrol'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
-    videos_dir = 'C:/Users/{}/Videos/Surveillance/'.format(user)
+    videos_dir = 'C:/Users/{}/Videos/Surveillance'.format(user)
 elif sys.platform == 'linux':
     messages_dir = os.path.relpath(
-        '/home/{}/.local/share/kontrol/'.format(user))
+        '/home/{}/.local/share/kontrol'.format(user))
     messages_path = os.path.relpath(
         '/home/{}/.local/share/kontrol/messages'.format(user))
     videos_dir = os.path.relpath(
-        '/home/{}/Videos/Surveillance/'.format(user))
+        '/home/{}/Videos/Surveillance'.format(user))
 
 if getattr(sys, 'frozen', False):
     # frozen
@@ -204,9 +204,10 @@ class Record(QThread):
         stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
         capture = cv2.VideoCapture(stream_url)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        cwd = os.getcwd()
-        video_name = '{}.avi'.format(
-            date.strftime(datetime.now(), '%Y%m%d_%H%M%S'))
+        video_date = date.strftime(datetime.now(), '%Y%m%d_%H%M%S')
+        video_name = '{}.avi'.format(video_date)
+        video_src = os.getcwd() + '\\' + video_name
+        video_dist = videos_dir + '/' + video_name
         if capture.isOpened():
             self.out = cv2.VideoWriter(video_name, fourcc, 10.0, (1280, 720))
             while self.isRunning:
@@ -221,11 +222,9 @@ class Record(QThread):
         else:
             self.signal.emit('nocam', 'camera')
         if sys.platform == 'win32':
-            os.system(r"move {}\{} {}{}".format(
-                cwd, video_name, videos_dir, video_name))
+            os.system("move {} {}".format(video_src, video_dist))
         elif sys.platform == 'linux':
-            os.system("mv {}/{} {}/{}".format(
-                cwd, video_name, videos_dir, video_name))
+            os.system("mv {} {}".format(video_src, video_dist))
 
     def stop(self):
         try:
