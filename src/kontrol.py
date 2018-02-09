@@ -210,7 +210,7 @@ class Record(QThread):
         if capture.isOpened():
             self.out = cv2.VideoWriter(video_name, fourcc, 10.0, (1280, 720))
             while self.isRunning:
-                if date.strftime(datetime.now(), '%H%M%S') == '235959':
+                if date.strftime(datetime.now(), '%H:%M:%S') == '02:27:59':
                     self.signal.emit('restart', 'camera')
                     break
                 ret, image = capture.read()
