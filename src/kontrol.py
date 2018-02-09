@@ -2,9 +2,9 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem, QDesktopWidget, QLabel
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QTextDocument, QImage, QPixmap
+from PyQt5.QtGui import QTextDocument, QImage, QPixmap, QIcon
 from PyQt5.QtMultimedia import QSound
-from main import Ui_MainWindow as mainWindow
+from main import Ui_MainWindow
 from datetime import datetime, date
 from threading import Thread
 import paho.mqtt.client as mqtt
@@ -298,6 +298,10 @@ class Camera(QLabel):
         super(Camera, self).__init__(parent)
         QLabel.__init__(self)
         self.setFixedSize(1280, 720)
+        icon = QIcon()
+        icon.addPixmap(
+            QPixmap(":/icons/png/kontrol_24.png"), QIcon.Normal, QIcon.Off)
+        self.setWindowIcon(icon)
 
     def closeEvent(self, event):
         self.signal.emit('close', 'camera')
@@ -307,7 +311,7 @@ class Camera(QLabel):
         self.setPixmap(outPixmap)
 
 
-class MainApp(QMainWindow, mainWindow):
+class MainApp(QMainWindow, Ui_MainWindow):
 
     def __init__(self, parent=None):
         super(MainApp, self).__init__(parent)
@@ -352,12 +356,12 @@ class MainApp(QMainWindow, mainWindow):
                 self.tabWidget.setCurrentIndex(4)
 
     def closeEvent(self, event):
+        self.button_stop_camera()
+        self.quit = True
         if sys.platform == 'win32':
             os.system('taskkill /f /im kontrol.exe')
-            os.system('taskkill /f /im Python.exe')
         elif sys.platform == 'linux':
             os.system('pkill kontrol')
-        self.quit = True
         event.accept()
 
     def make_dirs(self):
