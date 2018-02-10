@@ -17,13 +17,14 @@ import random
 import string
 import time
 
-
 user = getpass.getuser()
 
+# Initialize paths
 if sys.platform == 'win32':
     messages_dir = 'C:/Users/{}/AppData/Local/kontrol'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
     videos_dir = 'C:/Users/{}/Videos/Surveillance'.format(user)
+    audio_path = os.path.dirname(__file__) + '\\alarm.wav'
 elif sys.platform == 'linux':
     messages_dir = os.path.relpath(
         '/home/{}/.local/share/kontrol'.format(user))
@@ -31,6 +32,7 @@ elif sys.platform == 'linux':
         '/home/{}/.local/share/kontrol/messages'.format(user))
     videos_dir = os.path.relpath(
         '/home/{}/Videos/Surveillance'.format(user))
+    audio_path = os.path.dirname(__file__) + '/alarm.wav'
 
 if getattr(sys, 'frozen', False):
     # frozen
@@ -616,16 +618,12 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc.publish('indoor_air', self.in_air_spinbox.value())
 
     def alarm(self, msg):
-        if sys.platform == 'win32':
-            song_path = 'C:/Program Files (x86)/kontrol/alarm.wav'
-        elif sys.platform == 'linux':
-            song_path = '/home/amr/projects/kontrol/alarm.wav'
-        song = QSound(song_path)
-        song.setLoops(-1)
-        song.play()
+        audio = QSound(audio_path)
+        audio.setLoops(-1)
+        audio.play()
         reply = QMessageBox.warning(None, 'Alarm', msg, QMessageBox.Ok)
         if reply == QMessageBox.Ok:
-            song.stop()
+            audio.stop()
 
     def conf_labels(self, msg, topic):
         if topic == 'indoor_light_cb':
