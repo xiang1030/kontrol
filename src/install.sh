@@ -2,7 +2,6 @@
 
 text_desktop="[Desktop Entry]
  
-                                                                
 Name=Kontrol
 Comment=Desktop application to control Smart College
 Type=Application
