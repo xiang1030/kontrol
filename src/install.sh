@@ -2,15 +2,18 @@
 
 text_desktop="[Desktop Entry]
  
-Type=Application
-Version=1.0                                                                      
+                                                                
 Name=Kontrol
+Comment=Desktop application to control Smart College
+Type=Application
+Version=1.0
 Exec=kontrol
 Icon=kontrol
+Categories=Development
 StartupWMClass=kontrol.py"
 
 text_bin="""#!/bin/bash
-python3 /home/amr/projects/kontrol/kontrol.py"""
+python3 /home/amr/projects/kontrol/src/kontrol.py"""
 
 sudo echo "$text_desktop" > /usr/share/applications/kontrol.desktop
 sudo echo "$text_bin" > /usr/bin/kontrol
@@ -33,4 +36,4 @@ sudo cp "icons/png/kontrol_256.png" "/usr/share/icons/hicolor/256x256/apps/kontr
 sudo cp "icons/png/kontrol_512.png" "/usr/share/icons/hicolor/512x512/apps/kontrol.png"
 sudo cp "icons/png/kontrol_1024.png" "/usr/share/icons/hicolor/1024x1024/apps/kontrol.png"
 sudo cp "icons/png/kontrol_256.png" "/usr/share/pixmaps/kontrol.png"
-sudo cp "icons/png/kontrol_256.svg" "/usr/share/icons/hicolor/scalable/apps/kontrol.svg"
+sudo cp "icons/svg/kontrol_256.svg" "/usr/share/icons/hicolor/scalable/apps/kontrol.svg"
