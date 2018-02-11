@@ -19,7 +19,7 @@ import time
 
 user = getpass.getuser()
 
-# Initialize paths
+# declare paths
 if sys.platform == 'win32':
     messages_dir = 'C:/Users/{}/AppData/Local/kontrol'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
@@ -328,17 +328,17 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.t = Thread(target=self.connect)
         self.t.start()
         self.quit = False
-        # initialize Camera
+        # initialize camera
         self.cam = Camera()
         self.cam.signal.connect(self.conf_labels)
-        # initialize Stream Thread
+        # initialize stream thread
         self.st = Stream()
         self.st.signal.connect(self.conf_labels)
         self.st.changePixmap.connect(self.cam.viewImage)
-        # initialize Record Thread
+        # initialize record thread
         self.rec = Record()
         self.rec.signal.connect(self.conf_labels)
-        # start Message Thread
+        # start message thread
         self.thread = GetMessage()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
@@ -434,20 +434,20 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.out_close_button.clicked.connect(self.button_out_close)
         self.out_alarm_button.clicked.connect(self.button_out_alarm)
 
-        # Message
+        # message
         self.message_send_button.clicked.connect(self.button_message_send)
         self.message_clear_button.clicked.connect(self.button_message_clear)
 
-        # Database
+        # database
         self.refresh_button.clicked.connect(self.button_refresh)
 
-        # Camera
+        # camera
         self.stream_button.clicked.connect(self.button_stream)
         self.record_button.clicked.connect(self.button_record)
         self.stream_record_button.clicked.connect(self.button_stream_record)
         self.stop_camera_button.clicked.connect(self.button_stop_camera)
 
-    # Camera
+    # camera
     def button_stream(self):
         self.st.start()
 
@@ -463,9 +463,9 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.rec.stop()
         self.cam.close()
 
-    # Database
+    # database
     def button_refresh(self):
-        t = Thread(target=self.db)
+        t = Thread(target=self.database)
         t.start()
 
     # indoor
@@ -811,7 +811,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
                 self.rec.stop()
                 self.rec.start()
 
-    def db(self):
+    def database(self):
         row = 0
         col_name = 0
         col_code = 1
