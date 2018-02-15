@@ -24,7 +24,6 @@ if sys.platform == 'win32':
     messages_dir = 'C:/Users/{}/AppData/Local/kontrol'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
     videos_dir = 'C:/Users/{}/Videos/Surveillance'.format(user)
-    audio_path = os.path.dirname(__file__) + '\\alarm.wav'
 elif sys.platform == 'linux':
     messages_dir = os.path.relpath(
         '/home/{}/.local/share/kontrol'.format(user))
@@ -32,7 +31,6 @@ elif sys.platform == 'linux':
         '/home/{}/.local/share/kontrol/messages'.format(user))
     videos_dir = os.path.relpath(
         '/home/{}/Videos/Surveillance'.format(user))
-    audio_path = os.path.dirname(__file__) + '/alarm.wav'
 
 if getattr(sys, 'frozen', False):
     # frozen
@@ -618,7 +616,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc.publish('indoor_air', self.in_air_spinbox.value())
 
     def alarm(self, msg):
-        audio = QSound(audio_path)
+        audio = QSound('alarm.wav')
         audio.setLoops(-1)
         audio.play()
         reply = QMessageBox.warning(None, 'Alarm', msg, QMessageBox.Ok)
