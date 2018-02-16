@@ -32,13 +32,6 @@ elif sys.platform == 'linux':
     videos_dir = os.path.relpath(
         '/home/{}/Videos/Surveillance'.format(user))
 
-if getattr(sys, 'frozen', False):
-    # frozen
-    dir_ = os.path.dirname(sys.executable)
-else:
-    # unfrozen
-    dir_ = os.path.dirname(os.path.realpath(__file__))
-
 
 def on_message(client, userdata, message):
     msg = str(message.payload.decode('utf-8'))
