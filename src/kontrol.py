@@ -351,10 +351,6 @@ class MainApp(QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         self.button_stop_camera()
         self.quit = True
-        if sys.platform == 'win32':
-            os.system('taskkill /f /im kontrol.exe')
-        elif sys.platform == 'linux':
-            os.system('pkill kontrol')
         event.accept()
 
     def make_dirs(self):
