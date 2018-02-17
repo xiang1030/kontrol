@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "kontrol"
-#define MyAppVersion "20180216"
+#define MyAppVersion "1.0.0"
 #define MyAppPublisher "NDETI"
 #define MyAppURL "http://ndeti.edu.eg"
 #define MyAppExeName "kontrol.exe"
@@ -21,7 +21,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=E:\amr\Projects\assc\kontrol\LICENSE.txt
+LicenseFile=E:\amr\Projects\assc\kontrol\LICENSE
 OutputDir=E:\amr\Projects\assc\kontrol\src\dist
 OutputBaseFilename=kontrol_setup
 SetupIconFile=E:\amr\Projects\assc\kontrol\src\icon.ico
