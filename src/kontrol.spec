@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['kontrol.py'],
-             pathex=['E:\\amr\\Projects\\assc\\kontrol\\src'],
+             pathex=[],
              binaries=[],
              datas=[('alarm.wav','.')],
              hiddenimports=[],
