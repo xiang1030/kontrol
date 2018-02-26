@@ -687,13 +687,14 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
         elif topic == 'indoor_temp_cb':
 
-            if int(msg) > 22 and int(msg) < 28:
+            msg = int(float(msg))
+            if msg > 22 and msg < 28:
                 self.in_temp_label.setText(
                     '<p style="color:#2E7D32">{}°</p>'.format(msg))
-            elif int(msg) <= 22:
+            elif msg <= 22:
                 self.in_temp_label.setText(
                     '<p style="color:#1565C0">{}°</p>'.format(msg))
-            elif int(msg) >= 28:
+            elif msg >= 28:
                 self.in_temp_label.setText(
                     '<p style="color:#C62828">{}°</p>'.format(msg))
 
@@ -745,19 +746,21 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
         elif topic == 'outdoor_temp_cb':
 
-            if int(msg) >= 23 and int(msg) <= 27:
+            msg = int(float(msg))
+            if msg >= 23 and msg <= 27:
                 self.out_temp_label.setText(
                     '<p style="color:#2E7D32">{}°</p>'.format(msg))
-            elif int(msg) <= 22:
+            elif msg <= 22:
                 self.out_temp_label.setText(
                     '<p style="color:#1565C0">{}°</p>'.format(msg))
-            elif int(msg) >= 28:
+            elif msg >= 28:
                 self.out_temp_label.setText(
                     '<p style="color:#C62828">{}°</p>'.format(msg))
 
         elif topic == 'outdoor_hum_cb':
 
-            if int(msg) >= 45 and int(msg) <= 55:
+            msg = int(float(msg))
+            if msg >= 45 and msg <= 55:
                 self.out_hum_label.setText(
                     '<p style="color:#2E7D32">{}</p>'.format(msg))
             else:
