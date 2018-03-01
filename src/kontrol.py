@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
-from PyQt5.QtWidgets import QTableWidgetItem, QDesktopWidget, QLabel
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel
+from PyQt5.QtWidgets import QTableWidgetItem, QDesktopWidget
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QTextDocument, QImage, QPixmap, QIcon
 from PyQt5.QtMultimedia import QSound
@@ -23,24 +23,30 @@ user = getpass.getuser()
 if sys.platform == 'win32':
     messages_dir = 'C:/Users/{}/AppData/Local/kontrol'.format(user)
     messages_path = 'C:/Users/{}/AppData/Local/kontrol/messages'.format(user)
+    alarms_path = 'C:/Users/{}/AppData/Local/kontrol/alarms'.format(user)
+    audio_path = os.path.dirname(os.path.realpath(__file__)) + '\\alarm.wav'
     videos_dir = 'C:/Users/{}/Videos/Surveillance'.format(user)
 elif sys.platform == 'linux':
     messages_dir = os.path.relpath(
         '/home/{}/.local/share/kontrol'.format(user))
     messages_path = os.path.relpath(
         '/home/{}/.local/share/kontrol/messages'.format(user))
+    alarms_path = os.path.relpath(
+        '/home/{}/.local/share/kontrol/alarms'.format(user))
+    audio_path = os.path.dirname(os.path.realpath(__file__)) + '/alarm.wav'
     videos_dir = os.path.relpath(
         '/home/{}/Videos/Surveillance'.format(user))
 
 
 def on_message(client, userdata, message):
     msg = str(message.payload.decode('utf-8'))
-    msg_list = msg.split('!')
-    if msg_list[len(msg_list) - 1] == '':
-        del msg_list[len(msg_list) - 1]
-    with open(messages_path, 'w') as op:
-        for l in msg_list:
-            op.write(l + message.topic + '\n')
+    if message.topic == 'alarm_cb':
+        op = open(alarms_path, 'w')
+        op.write(msg + '\n')
+        op.close()
+    else:
+        op = open(messages_path, 'w')
+        op.write(msg + message.topic + '\n')
         op.close()
 
 
@@ -53,9 +59,9 @@ class GetMessage(QThread):
 
     def run(self):
         while True:
-            with open(messages_path, 'r') as op:
-                message = op.readlines()
-                op.close()
+            op = open(messages_path, 'r')
+            message = op.readlines()
+            op.close()
             for line in message:
                 if 'indoor_light_cb' in line:
                     topic = 'indoor_light_cb'
@@ -173,14 +179,173 @@ class GetMessage(QThread):
                     msg = line.replace(topic, '')
                     msg = msg.strip()
                     self.signal.emit(msg, topic)
-
-                elif 'alarm_cb' in line:
-                    topic = 'alarm_cb'
-                    msg = line.replace(topic, '')
-                    msg = msg.strip()
-                    self.signal.emit(msg, topic)
             open(messages_path, 'w')
             self.msleep(50)
+
+
+class FireAlarm(QThread):
+
+    signal = pyqtSignal(str, str)
+
+    def __init__(self):
+        super(FireAlarm, self).__init__()
+        self.audio = QSound(audio_path)
+        self.audio.setLoops(-1)
+        self.fire = True
+
+    def run(self):
+        while True:
+            op = open(alarms_path, 'r')
+            message = op.readlines()
+            op.close()
+            for line in message:
+                if 'Fire' in line:
+                    self.fire = True
+                    self.audio.play()
+                    while self.fire:
+                        self.signal.emit('fire_red', 'alarm_anime')
+                        self.msleep(500)
+                        self.signal.emit('fire_blue', 'alarm_anime')
+                        self.msleep(500)
+                    self.signal.emit('fire_green', 'alarm_anime')
+            self.msleep(50)
+
+    def stop(self):
+        open(alarms_path, 'w')
+        self.fire = False
+        self.audio.stop()
+
+
+class WaterAlarm(QThread):
+
+    signal = pyqtSignal(str, str)
+
+    def __init__(self):
+        super(WaterAlarm, self).__init__()
+        self.audio = QSound(audio_path)
+        self.audio.setLoops(-1)
+        self.water = True
+
+    def run(self):
+        while True:
+            op = open(alarms_path, 'r')
+            message = op.readlines()
+            op.close()
+            for line in message:
+                self.water = True
+                self.audio.play()
+                if 'Water' in line:
+                    while self.water:
+                        self.signal.emit('water_red', 'alarm_anime')
+                        self.msleep(500)
+                        self.signal.emit('water_blue', 'alarm_anime')
+                        self.msleep(500)
+                    self.signal.emit('water_green', 'alarm_anime')
+            self.msleep(50)
+
+    def stop(self):
+        open(alarms_path, 'w')
+        self.water = False
+        self.audio.stop()
+
+
+class GasAlarm(QThread):
+
+    signal = pyqtSignal(str, str)
+
+    def __init__(self):
+        super(GasAlarm, self).__init__()
+        self.audio = QSound(audio_path)
+        self.audio.setLoops(-1)
+        self.gas = True
+
+    def run(self):
+        while True:
+            op = open(alarms_path, 'r')
+            message = op.readlines()
+            op.close()
+            for line in message:
+                if 'Gas' in line:
+                    self.gas = True
+                    self.audio.play()
+                    while self.gas:
+                        self.signal.emit('gas_red', 'alarm_anime')
+                        self.msleep(500)
+                        self.signal.emit('gas_blue', 'alarm_anime')
+                        self.msleep(500)
+                    self.signal.emit('gas_green', 'alarm_anime')
+            self.msleep(50)
+
+    def stop(self):
+        open(alarms_path, 'w')
+        self.gas = False
+        self.audio.stop()
+
+
+class MotionAlarm(QThread):
+
+    signal = pyqtSignal(str, str)
+
+    def __init__(self):
+        super(MotionAlarm, self).__init__()
+        self.audio = QSound(audio_path)
+        self.audio.setLoops(-1)
+        self.motion = True
+
+    def run(self):
+        while True:
+            op = open(alarms_path, 'r')
+            message = op.readlines()
+            op.close()
+            for line in message:
+                if 'Motion' in line:
+                    self.motion = True
+                    self.audio.play()
+                    while self.motion:
+                        self.signal.emit('motion_red', 'alarm_anime')
+                        self.msleep(500)
+                        self.signal.emit('motion_blue', 'alarm_anime')
+                        self.msleep(500)
+                    self.signal.emit('motion_green', 'alarm_anime')
+            self.msleep(50)
+
+    def stop(self):
+        open(alarms_path, 'w')
+        self.motion = False
+        self.audio.stop()
+
+
+class LaserAlarm(QThread):
+
+    signal = pyqtSignal(str, str)
+
+    def __init__(self):
+        super(LaserAlarm, self).__init__()
+        self.audio = QSound(audio_path)
+        self.audio.setLoops(-1)
+        self.laser = True
+
+    def run(self):
+        while True:
+            op = open(alarms_path, 'r')
+            message = op.readlines()
+            op.close()
+            for line in message:
+                if 'Laser' in line:
+                    self.laser = True
+                    self.audio.play()
+                    while self.laser:
+                        self.signal.emit('laser_red', 'alarm_anime')
+                        self.msleep(500)
+                        self.signal.emit('laser_blue', 'alarm_anime')
+                        self.msleep(500)
+                    self.signal.emit('laser_green', 'alarm_anime')
+            self.msleep(50)
+
+    def stop(self):
+        open(alarms_path, 'w')
+        self.laser = False
+        self.audio.stop()
 
 
 class Record(QThread):
@@ -333,6 +498,26 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.thread = GetMessage()
         self.thread.start()
         self.thread.signal.connect(self.conf_labels)
+        # start FireAlarm
+        self.falarm = FireAlarm()
+        self.falarm.start()
+        self.falarm.signal.connect(self.conf_labels)
+        # start WaterAlarm
+        self.walarm = WaterAlarm()
+        self.walarm.start()
+        self.walarm.signal.connect(self.conf_labels)
+        # start GasAlarm
+        self.galarm = GasAlarm()
+        self.galarm.start()
+        self.galarm.signal.connect(self.conf_labels)
+        # start MotionAlarm
+        self.malarm = MotionAlarm()
+        self.malarm.start()
+        self.malarm.signal.connect(self.conf_labels)
+        # start LaserAlarm
+        self.lalarm = LaserAlarm()
+        self.lalarm.start()
+        self.lalarm.signal.connect(self.conf_labels)
 
     def keyPressEvent(self, event):
         modifiers = QApplication.keyboardModifiers()
@@ -350,6 +535,11 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
         self.button_stop_camera()
+        self.falarm.quit()
+        self.walarm.quit()
+        self.galarm.quit()
+        self.malarm.quit()
+        self.lalarm.quit()
         self.quit = True
         event.accept()
 
@@ -359,6 +549,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
         if not os.path.exists(videos_dir):
             os.makedirs(videos_dir)
         open(messages_path, 'w')
+        open(alarms_path, 'w')
 
     def random_id(self):
         s = string.ascii_letters + string.digits
@@ -434,6 +625,13 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.stream_record_button.clicked.connect(self.button_stream_record)
         self.stop_camera_button.clicked.connect(self.button_stop_camera)
 
+        # alarms
+        self.fire_button.clicked.connect(self.button_fire)
+        self.water_button.clicked.connect(self.button_water)
+        self.gas_button.clicked.connect(self.button_gas)
+        self.motion_button.clicked.connect(self.button_motion)
+        self.laser_button.clicked.connect(self.button_laser)
+
     # camera
     def button_stream(self):
         self.st.start()
@@ -449,6 +647,22 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.st.stop()
         self.rec.stop()
         self.cam.close()
+
+    # alarms
+    def button_fire(self):
+        self.falarm.stop()
+
+    def button_water(self):
+        self.walarm.stop()
+
+    def button_gas(self):
+        self.galarm.stop()
+
+    def button_motion(self):
+        self.malarm.stop()
+
+    def button_laser(self):
+        self.lalarm.stop()
 
     # database
     def button_refresh(self):
@@ -605,14 +819,19 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc.publish('indoor_air', self.in_air_spinbox.value())
 
     def alarm(self, msg):
-        audio = QSound('alarm.wav')
-        audio.setLoops(-1)
-        audio.play()
-        reply = QMessageBox.warning(None, 'Alarm', msg, QMessageBox.Ok)
-        if reply == QMessageBox.Ok:
-            audio.stop()
+        self.audio = QSound(audio_path)
+        self.audio.setLoops(-1)
+        if msg == 'start':
+            self.audio.play()
+        else:
+            self.audio.stop()
 
     def conf_labels(self, msg, topic):
+
+        red_style = 'QPushButton {background-color: #C62828;}'
+        blue_style = 'QPushButton {background-color: #1565C0;}'
+        green_style = 'QPushButton {background-color: #2E7D32;}'
+        
         if topic == 'indoor_light_cb':
 
             if msg == 'ON':
@@ -776,8 +995,37 @@ class MainApp(QMainWindow, Ui_MainWindow):
                 self.out_alarm_label.setText(
                     '<p style="color:#C62828">Inactive</p>')
 
-        elif topic == 'alarm_cb':
-            self.alarm(msg)
+        elif topic == 'alarm_anime':
+            if msg == 'fire_red':
+                self.fire_button.setStyleSheet(red_style)
+            elif msg == 'fire_blue':
+                self.fire_button.setStyleSheet(blue_style)
+            elif msg == 'fire_green':
+                self.fire_button.setStyleSheet(green_style)
+            elif msg == 'water_red':
+                self.water_button.setStyleSheet(red_style)
+            elif msg == 'water_blue':
+                self.water_button.setStyleSheet(blue_style)
+            elif msg == 'water_green':
+                self.water_button.setStyleSheet(green_style)
+            elif msg == 'gas_red':
+                self.gas_button.setStyleSheet(red_style)
+            elif msg == 'gas_blue':
+                self.gas_button.setStyleSheet(blue_style)
+            elif msg == 'gas_green':
+                self.gas_button.setStyleSheet(green_style)
+            elif msg == 'motion_red':
+                self.motion_button.setStyleSheet(red_style)
+            elif msg == 'motion_blue':
+                self.motion_button.setStyleSheet(blue_style)
+            elif msg == 'motion_green':
+                self.motion_button.setStyleSheet(green_style)
+            elif msg == 'laser_red':
+                self.laser_button.setStyleSheet(red_style)
+            elif msg == 'laser_blue':
+                self.laser_button.setStyleSheet(blue_style)
+            elif msg == 'laser_green':
+                self.laser_button.setStyleSheet(green_style)
 
         elif topic == 'camera':
 
