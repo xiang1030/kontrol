@@ -1599,7 +1599,7 @@ class Ui_MainWindow(object):
         self.indoor_label.setAlignment(QtCore.Qt.AlignCenter)
         self.indoor_label.setObjectName("indoor_label")
         self.outdoor_frame = QtWidgets.QFrame(self.centralwidget)
-        self.outdoor_frame.setGeometry(QtCore.QRect(515, 362, 385, 178))
+        self.outdoor_frame.setGeometry(QtCore.QRect(515, 360, 385, 178))
         font = QtGui.QFont()
         font.setPointSize(13)
         self.outdoor_frame.setFont(font)
