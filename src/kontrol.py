@@ -1055,7 +1055,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
         try:
             cnx = mysql.connector.connect(
-                user='root', password='nowayout',
+                user='amr', password='nowayout',
                 host='ndeti.mooo.com', database='assc')
         except Exception:
             pass
