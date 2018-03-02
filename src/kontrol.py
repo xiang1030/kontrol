@@ -232,9 +232,9 @@ class WaterAlarm(QThread):
             message = op.readlines()
             op.close()
             for line in message:
-                self.water = True
-                self.audio.play()
                 if 'Water' in line:
+                    self.water = True
+                    self.audio.play()
                     while self.water:
                         self.signal.emit('water_red', 'alarm_anime')
                         self.msleep(500)
@@ -559,7 +559,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc = mqtt.Client(self.client_id)
         while not self.quit:
             try:
-                self.mqttc.connect('ndeti.mooo.com')
+                self.mqttc.connect('localhost')
             except Exception:
                 print('[MQTT]: Connection failed')
                 print('[MQTT]: Reconnecting ...')
@@ -818,20 +818,12 @@ class MainApp(QMainWindow, Ui_MainWindow):
     def spin_ra(self):
         self.mqttc.publish('indoor_air', self.in_air_spinbox.value())
 
-    def alarm(self, msg):
-        self.audio = QSound(audio_path)
-        self.audio.setLoops(-1)
-        if msg == 'start':
-            self.audio.play()
-        else:
-            self.audio.stop()
-
     def conf_labels(self, msg, topic):
 
         red_style = 'QPushButton {background-color: #C62828;}'
         blue_style = 'QPushButton {background-color: #1565C0;}'
         green_style = 'QPushButton {background-color: #2E7D32;}'
-        
+
         if topic == 'indoor_light_cb':
 
             if msg == 'ON':
