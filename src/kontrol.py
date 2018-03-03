@@ -189,8 +189,6 @@ class FireAlarm(QThread):
 
     def __init__(self):
         super(FireAlarm, self).__init__()
-        self.audio = QSound(audio_path)
-        self.audio.setLoops(-1)
         self.fire = True
 
     def run(self):
@@ -201,8 +199,8 @@ class FireAlarm(QThread):
             for line in message:
                 if 'Fire' in line:
                     self.fire = True
-                    self.audio.play()
                     while self.fire:
+                        self.signal.emit('alarm', 'alarm_anime')
                         self.signal.emit('fire_red', 'alarm_anime')
                         self.msleep(500)
                         self.signal.emit('fire_blue', 'alarm_anime')
@@ -213,7 +211,6 @@ class FireAlarm(QThread):
     def stop(self):
         open(alarms_path, 'w')
         self.fire = False
-        self.audio.stop()
 
 
 class WaterAlarm(QThread):
@@ -222,8 +219,6 @@ class WaterAlarm(QThread):
 
     def __init__(self):
         super(WaterAlarm, self).__init__()
-        self.audio = QSound(audio_path)
-        self.audio.setLoops(-1)
         self.water = True
 
     def run(self):
@@ -234,8 +229,8 @@ class WaterAlarm(QThread):
             for line in message:
                 if 'Water' in line:
                     self.water = True
-                    self.audio.play()
                     while self.water:
+                        self.signal.emit('alarm', 'alarm_anime')
                         self.signal.emit('water_red', 'alarm_anime')
                         self.msleep(500)
                         self.signal.emit('water_blue', 'alarm_anime')
@@ -246,7 +241,6 @@ class WaterAlarm(QThread):
     def stop(self):
         open(alarms_path, 'w')
         self.water = False
-        self.audio.stop()
 
 
 class GasAlarm(QThread):
@@ -255,8 +249,6 @@ class GasAlarm(QThread):
 
     def __init__(self):
         super(GasAlarm, self).__init__()
-        self.audio = QSound(audio_path)
-        self.audio.setLoops(-1)
         self.gas = True
 
     def run(self):
@@ -267,7 +259,7 @@ class GasAlarm(QThread):
             for line in message:
                 if 'Gas' in line:
                     self.gas = True
-                    self.audio.play()
+                    self.signal.emit('alarm', 'alarm_anime')
                     while self.gas:
                         self.signal.emit('gas_red', 'alarm_anime')
                         self.msleep(500)
@@ -279,7 +271,6 @@ class GasAlarm(QThread):
     def stop(self):
         open(alarms_path, 'w')
         self.gas = False
-        self.audio.stop()
 
 
 class MotionAlarm(QThread):
@@ -288,8 +279,6 @@ class MotionAlarm(QThread):
 
     def __init__(self):
         super(MotionAlarm, self).__init__()
-        self.audio = QSound(audio_path)
-        self.audio.setLoops(-1)
         self.motion = True
 
     def run(self):
@@ -300,7 +289,7 @@ class MotionAlarm(QThread):
             for line in message:
                 if 'Motion' in line:
                     self.motion = True
-                    self.audio.play()
+                    self.signal.emit('alarm', 'alarm_anime')
                     while self.motion:
                         self.signal.emit('motion_red', 'alarm_anime')
                         self.msleep(500)
@@ -312,7 +301,6 @@ class MotionAlarm(QThread):
     def stop(self):
         open(alarms_path, 'w')
         self.motion = False
-        self.audio.stop()
 
 
 class LaserAlarm(QThread):
@@ -321,8 +309,6 @@ class LaserAlarm(QThread):
 
     def __init__(self):
         super(LaserAlarm, self).__init__()
-        self.audio = QSound(audio_path)
-        self.audio.setLoops(-1)
         self.laser = True
 
     def run(self):
@@ -333,7 +319,7 @@ class LaserAlarm(QThread):
             for line in message:
                 if 'Laser' in line:
                     self.laser = True
-                    self.audio.play()
+                    self.signal.emit('alarm', 'alarm_anime')
                     while self.laser:
                         self.signal.emit('laser_red', 'alarm_anime')
                         self.msleep(500)
@@ -345,7 +331,6 @@ class LaserAlarm(QThread):
     def stop(self):
         open(alarms_path, 'w')
         self.laser = False
-        self.audio.stop()
 
 
 class Record(QThread):
@@ -518,6 +503,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.lalarm = LaserAlarm()
         self.lalarm.start()
         self.lalarm.signal.connect(self.conf_labels)
+        self.alarm_status = 'off'
 
     def keyPressEvent(self, event):
         modifiers = QApplication.keyboardModifiers()
@@ -651,18 +637,23 @@ class MainApp(QMainWindow, Ui_MainWindow):
     # alarms
     def button_fire(self):
         self.falarm.stop()
+        self.alarm('stop')
 
     def button_water(self):
         self.walarm.stop()
+        self.alarm('stop')
 
     def button_gas(self):
         self.galarm.stop()
+        self.alarm('stop')
 
     def button_motion(self):
         self.malarm.stop()
+        self.alarm('stop')
 
     def button_laser(self):
         self.lalarm.stop()
+        self.alarm('stop')
 
     # database
     def button_refresh(self):
@@ -817,6 +808,16 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
     def spin_ra(self):
         self.mqttc.publish('indoor_air', self.in_air_spinbox.value())
+
+    def alarm(self, msg):
+        self.audio = QSound(audio_path)
+        self.audio.setLoops(-1)
+        if msg == 'start':
+            self.audio.play()
+            self.alarm_status = 'on'
+        else:
+            self.audio.stop()
+            self.alarm_status = 'off'
 
     def conf_labels(self, msg, topic):
 
@@ -988,7 +989,10 @@ class MainApp(QMainWindow, Ui_MainWindow):
                     '<p style="color:#C62828">Inactive</p>')
 
         elif topic == 'alarm_anime':
-            if msg == 'fire_red':
+            if msg == 'alarm':
+                if self.alarm_status == 'off':
+                    self.alarm('start')
+            elif msg == 'fire_red':
                 self.fire_button.setStyleSheet(red_style)
             elif msg == 'fire_blue':
                 self.fire_button.setStyleSheet(blue_style)
@@ -1058,7 +1062,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
                 user='amr', password='nowayout',
                 host='ndeti.mooo.com', database='assc')
         except Exception:
-            pass
+            print('[MySQL]: Connection Failed')
         else:
             cursor = cnx.cursor()
             get_code = ("""SELECT aname, uid, code, year, s1, s2, s3,
@@ -1067,13 +1071,13 @@ class MainApp(QMainWindow, Ui_MainWindow):
             for (aname, uid, code, year, s1, s2, s3, s4, s5) in cursor:
                 self.table.setItem(row, col_code, QTableWidgetItem(str(code)))
                 self.table.setItem(row, col_year, QTableWidgetItem(str(year)))
-                self.table.setItem(row, col_uid, QTableWidgetItem(str(uid)))
-                self.table.setItem(row, col_name, QTableWidgetItem(str(aname)))
-                self.table.setItem(row, col_s1, QTableWidgetItem(str(s1)))
-                self.table.setItem(row, col_s2, QTableWidgetItem(str(s2)))
-                self.table.setItem(row, col_s3, QTableWidgetItem(str(s3)))
-                self.table.setItem(row, col_s4, QTableWidgetItem(str(s4)))
-                self.table.setItem(row, col_s5, QTableWidgetItem(str(s5)))
+                self.table.setItem(row, col_uid, QTableWidgetItem(uid))
+                self.table.setItem(row, col_name, QTableWidgetItem(aname))
+                self.table.setItem(row, col_s1, QTableWidgetItem(s1))
+                self.table.setItem(row, col_s2, QTableWidgetItem(s2))
+                self.table.setItem(row, col_s3, QTableWidgetItem(s3))
+                self.table.setItem(row, col_s4, QTableWidgetItem(s4))
+                self.table.setItem(row, col_s5, QTableWidgetItem(s5))
                 row = row + 1
             cnx.commit()
             cursor.close()
