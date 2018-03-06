@@ -507,6 +507,12 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
     def keyPressEvent(self, event):
         modifiers = QApplication.keyboardModifiers()
+        if event.key() == Qt.Key_Space:
+            self.button_fire()
+            self.button_water()
+            self.button_gas()
+            self.button_motion()
+            self.button_laser()
         if modifiers == Qt.AltModifier:
             if event.key() == Qt.Key_1:
                 self.tabWidget.setCurrentIndex(0)

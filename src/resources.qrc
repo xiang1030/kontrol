@@ -2,8 +2,8 @@
   <qresource prefix="/">
     <file>icons/ui/search_hover.png</file>
     <file>icons/ui/arrow_drop_down.png</file>
-    <file>icons/png/kontrol_24.png</file>
     <file>icons/ui/arrow_drop_down_spin.png</file>
+    <file>icons/png/kontrol_128.png</file>
     <file>icons/ui/arrow_drop_down_spin_disabled.png</file>
     <file>icons/ui/arrow_drop_up_spin.png</file>
     <file>icons/ui/arrow_drop_up_spin_disabled.png</file>

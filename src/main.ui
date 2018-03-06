@@ -24,7 +24,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/icons/png/kontrol_24.png</normaloff>:/icons/png/kontrol_24.png</iconset>
+    <normaloff>:/icons/png/kontrol_128.png</normaloff>:/icons/png/kontrol_128.png</iconset>
   </property>
   <property name="toolTip">
    <string/>
