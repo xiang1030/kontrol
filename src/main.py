@@ -1142,14 +1142,15 @@ class Ui_MainWindow(object):
         self.table = QtWidgets.QTableWidget(self.tab_database)
         self.table.setGeometry(QtCore.QRect(8, 60, 893, 231))
         self.table.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.table.setStyleSheet("QTableView {\n"
-"    background-color : none;\n"
-"}\n"
-"\n"
-"QTableWidget::item {\n"
+        self.table.setStyleSheet("QHeaderView::section {\n"
+"    background-color: transparent;\n"
 "    color: #424242;\n"
+"    padding: 4px;\n"
+"    border: 1px solid #DBE3EB;\n"
 "}\n"
-"")
+"QTableView {\n"
+"    color: #424242;\n"
+"}")
         self.table.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.table.setAlternatingRowColors(True)
@@ -1220,6 +1221,8 @@ class Ui_MainWindow(object):
         item = QtWidgets.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         self.table.setItem(1, 3, item)
+        self.table.horizontalHeader().setSortIndicatorShown(False)
+        self.table.verticalHeader().setVisible(False)
         self.layoutWidget1 = QtWidgets.QWidget(self.tab_database)
         self.layoutWidget1.setGeometry(QtCore.QRect(10, 5, 501, 46))
         self.layoutWidget1.setObjectName("layoutWidget1")
@@ -1922,7 +1925,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
