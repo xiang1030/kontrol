@@ -23,7 +23,7 @@
    <string>Kontrol</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="resources.qrc">
     <normaloff>:/icons/png/kontrol_128.png</normaloff>:/icons/png/kontrol_128.png</iconset>
   </property>
   <property name="toolTip">
@@ -226,7 +226,7 @@ QComboBox QAbstractItemView {
      <enum>QTabWidget::Triangular</enum>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_indoor">
      <property name="styleSheet">
