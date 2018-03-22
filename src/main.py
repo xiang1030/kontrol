@@ -170,20 +170,20 @@ class Ui_MainWindow(object):
 "  }\n"
 "\n"
 "QComboBox {\n"
-"    background: #EEEEEE;\n"
-"    border: 1px solid transparent;\n"
+"    background: #E0E0E0;\n"
+"    border: 1px solid #E0E0E0;\n"
 "    border-radius: 2px;\n"
 "    color: #424242;\n"
-"    padding: 0 8px ;\n"
-"\n"
+"    padding: 0 0 0 8px ;\n"
 "}\n"
 "\n"
 "QComboBox::drop-down {\n"
 "    subcontrol-origin: padding;\n"
 "    subcontrol-position: top right;\n"
 "    width: 15px;\n"
+"    padding: 3px;\n"
 "    border-left-width: 0px;\n"
-"    border-left-color: #9E9E9E;\n"
+"    border-left-color: #E0E0E0;\n"
 "    border-left-style: solid;\n"
 "}\n"
 "\n"
@@ -192,20 +192,22 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QComboBox QAbstractItemView {\n"
-"    border: 0px;\n"
+"    background: #FFFFFF;\n"
+"    border: 1px solid #FFFFFF;\n"
 "    color: #424242;\n"
-"    position: relative;\n"
-"    padding: 4px 4px;\n"
+"    selection-background-color: #E0E0E0;\n"
+"    selection-color: #424242;\n"
 "}\n"
 "")
         self.tabWidget.setTabShape(QtWidgets.QTabWidget.Triangular)
         self.tabWidget.setObjectName("tabWidget")
         self.tab_indoor = QtWidgets.QWidget()
         self.tab_indoor.setStyleSheet("QLabel{\n"
-"  background: #E0E0E0;\n"
-"  color: #424242;\n"
-"  border-radius: 2px;\n"
-"  text-decoration: none;\n"
+"    background: #E0E0E0;\n"
+"    border: 0px;\n"
+"    color: #424242;\n"
+"    border-radius: 2px;\n"
+"    text-decoration: none;\n"
 "}\n"
 "")
         self.tab_indoor.setObjectName("tab_indoor")
@@ -1143,43 +1145,36 @@ class Ui_MainWindow(object):
         self.table.setGeometry(QtCore.QRect(8, 60, 893, 231))
         self.table.setFocusPolicy(QtCore.Qt.NoFocus)
         self.table.setStyleSheet("QHeaderView::section {\n"
-"    background-color: transparent;\n"
+"    background: #E0E0E0;\n"
 "    color: #424242;\n"
-"    padding: 4px;\n"
-"    border: 1px solid #DBE3EB;\n"
+"    padding: 6px;\n"
+"    border: 1px solid #D1D1D2;\n"
+"    border-left: 0px;\n"
+"    border-top: 0px;\n"
 "}\n"
 "QTableView {\n"
 "    color: #424242;\n"
+"}\n"
+"QTableView::item::hover {\n"
+"    background-color: #E3F2FD;\n"
+"}\n"
+"QTableView::item:selected {\n"
+"    background-color: #90CAF9;\n"
+"}\n"
+"QHeaderView::down-arrow {\n"
+"    background-color: transparent;\n"
+"}\n"
+"QHeaderView::up-arrow {\n"
+"    background-color: transparent;\n"
 "}")
         self.table.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.table.setAlternatingRowColors(True)
-        self.table.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
-        self.table.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.table.setShowGrid(True)
+        self.table.setCornerButtonEnabled(False)
+        self.table.setRowCount(10)
         self.table.setObjectName("table")
         self.table.setColumnCount(10)
-        self.table.setRowCount(10)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(4, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(5, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(6, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(7, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(8, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.table.setVerticalHeaderItem(9, item)
         item = QtWidgets.QTableWidgetItem()
         self.table.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
@@ -1200,29 +1195,6 @@ class Ui_MainWindow(object):
         self.table.setHorizontalHeaderItem(8, item)
         item = QtWidgets.QTableWidgetItem()
         self.table.setHorizontalHeaderItem(9, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.table.setItem(0, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.table.setItem(0, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.table.setItem(0, 2, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.table.setItem(0, 3, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.table.setItem(1, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.table.setItem(1, 2, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.table.setItem(1, 3, item)
-        self.table.horizontalHeader().setSortIndicatorShown(False)
-        self.table.verticalHeader().setVisible(False)
         self.layoutWidget1 = QtWidgets.QWidget(self.tab_database)
         self.layoutWidget1.setGeometry(QtCore.QRect(10, 5, 501, 46))
         self.layoutWidget1.setObjectName("layoutWidget1")
@@ -1301,7 +1273,7 @@ class Ui_MainWindow(object):
         self.refresh_button.setFont(font)
         self.refresh_button.setFocusPolicy(QtCore.Qt.NoFocus)
         self.refresh_button.setStyleSheet("QPushButton{\n"
-"    background: #EEEEEE;\n"
+"    background: #E0E0E0;\n"
 "    border: 0px;\n"
 "    border-radius: 2px;\n"
 "    image: url(:/icons/ui/refresh_normal.png);\n"
@@ -1330,11 +1302,11 @@ class Ui_MainWindow(object):
         self.search_lineedit.setFont(font)
         self.search_lineedit.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.search_lineedit.setStyleSheet("QLineEdit {\n"
-"    background: #EEEEEE;\n"
-"    border: 1px solid transparent;\n"
+"    background: #E0E0E0;\n"
+"    border: 1px solid #E0E0E0;\n"
 "    border-radius: 2px;\n"
 "    color: #424242;\n"
-"    padding: 0 4px 0 30px;\n"
+"    padding: 0 25px 0 27px;\n"
 "    selection-background-color: #42A5F5;\n"
 "    selection-color: #ffffff;\n"
 "}\n"
@@ -1347,7 +1319,7 @@ class Ui_MainWindow(object):
 "")
         self.search_lineedit.setObjectName("search_lineedit")
         self.label_2 = QtWidgets.QLabel(self.tab_database)
-        self.label_2.setGeometry(QtCore.QRect(727, 19, 21, 17))
+        self.label_2.setGeometry(QtCore.QRect(726, 19, 18, 18))
         self.label_2.setStyleSheet("    background-color: transparent;\n"
 "    background-image: url(:/icons/ui/search.png);\n"
 "    background-repeat: no-repeat;")
@@ -1994,9 +1966,6 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "S5"))
         item = self.table.horizontalHeaderItem(9)
         item.setText(_translate("MainWindow", "S6"))
-        __sortingEnabled = self.table.isSortingEnabled()
-        self.table.setSortingEnabled(False)
-        self.table.setSortingEnabled(__sortingEnabled)
         self.level_combobox.setItemText(0, _translate("MainWindow", "Level 1"))
         self.level_combobox.setItemText(1, _translate("MainWindow", "Level 2"))
         self.level_combobox.setItemText(2, _translate("MainWindow", "Level 3"))
