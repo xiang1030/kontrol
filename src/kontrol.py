@@ -344,7 +344,7 @@ class Record(QThread):
 
     def run(self):
         self.isRunning = True
-        stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
+        stream_url = 'rtsp://192.168.1.100:554/ucast/11'
         capture = cv2.VideoCapture(stream_url)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         video_date = date.strftime(datetime.now(), '%Y%m%d_%H%M%S')
@@ -391,7 +391,7 @@ class Stream(QThread):
 
     def run(self):
         self.isRunning = True
-        stream_url = 'rtsp://ndeti.mooo.com:554/ucast/11'
+        stream_url = 'rtsp://192.168.1.100:554/ucast/11'
         capture = cv2.VideoCapture(stream_url)
         geo = QDesktopWidget().availableGeometry()
         if capture.isOpened():
@@ -551,7 +551,7 @@ class MainApp(QMainWindow, Ui_MainWindow):
         self.mqttc = mqtt.Client(self.client_id)
         while not self.quit:
             try:
-                self.mqttc.connect('ndeti.mooo.com')
+                self.mqttc.connect('192.168.1.10')
             except Exception:
                 print('[MQTT]: Connection failed')
                 print('[MQTT]: Reconnecting ...')
@@ -1065,8 +1065,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
         try:
             cnx = mysql.connector.connect(
-                user='amr', password='nowayout',
-                host='ndeti.mooo.com', database='assc')
+                user='normal', password='itisjustnormal1!',
+                host='192.168.1.10', database='assc')
         except Exception:
             print('[MySQL]: Connection Failed')
         else:

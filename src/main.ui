@@ -1908,6 +1908,9 @@ border: 1px solid #CCCCCC;
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
+      <property name="layoutDirection">
+       <enum>Qt::RightToLeft</enum>
+      </property>
       <property name="styleSheet">
        <string notr="true">QHeaderView::section {
     background: #E0E0E0;

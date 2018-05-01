@@ -1144,6 +1144,7 @@ class Ui_MainWindow(object):
         self.table = QtWidgets.QTableWidget(self.tab_database)
         self.table.setGeometry(QtCore.QRect(8, 60, 893, 231))
         self.table.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.table.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.table.setStyleSheet("QHeaderView::section {\n"
 "    background: #E0E0E0;\n"
 "    color: #424242;\n"
