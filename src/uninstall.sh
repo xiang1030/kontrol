@@ -1,6 +1,7 @@
  #!/bin/bash
 
 sudo rm /usr/bin/kontrol
+sudo rm /usr/share/applications/kontrol.desktop
 sudo rm "/usr/share/icons/hicolor/16x16/apps/kontrol.png"
 sudo rm "/usr/share/icons/hicolor/20x20/apps/kontrol.png"
 sudo rm "/usr/share/icons/hicolor/22x22/apps/kontrol.png"
